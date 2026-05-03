@@ -584,7 +584,10 @@ export default function CenariosPlatform() {
         </>)}
       </main>
       <footer style={{ background: '#f5f5f5', borderTop: '1px solid #f0f0f0', padding: '2rem', marginTop: '3rem', textAlign: 'center' }}>
-        <p style={{ margin: 0, fontSize: '12px', color: '#999' }}>© 2026 Samara Assis Fotografia - Todos os direitos reservados</p>
+        <p style={{ margin: '0 0 0.75rem', fontSize: '12px', color: '#999' }}>© 2026 Samara Assis Fotografia - Todos os direitos reservados</p>
+        <a href="http://brazildigital.ag" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', lineHeight: 0, opacity: 0.7, transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = '1'} onMouseLeave={e => e.currentTarget.style.opacity = '0.7'} aria-label="BrazilDigital.ag">
+          <img src="https://brazildigital.ag/wp-content/uploads/2025/04/cropped-versao_Principal-80x80.png" alt="BrazilDigital" width="32" height="32" style={{ display: 'block' }} />
+        </a>
       </footer>
     </div></>);
 }
