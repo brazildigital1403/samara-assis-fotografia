@@ -60,7 +60,7 @@ function cenarioMatchFaixa(scenario, faixa) {
 }
 
 const LogoIcon = ({ src }) => {
-  if (src) return <img src={src} alt="Samara Assi" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />;
+  if (src) return <img src={src} alt="Samara Assi Fotografia" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />;
   return (<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="10" r="4" stroke="currentColor" strokeWidth="2" fill="none"/><path d="M8 24c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" strokeWidth="2" fill="none"/></svg>);
 };
 const CameraIcon = () => (<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/><circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" fill="none"/><circle cx="18" cy="8" r="1.5" fill="currentColor"/></svg>);
@@ -477,8 +477,8 @@ export default function CenariosPlatform() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, flex: 1 }}>
             <LogoIcon src={logoUrl} />
             <div style={{ minWidth: 0 }}>
-              <h1 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: '#000', whiteSpace: 'nowrap' }}>Samara Assi</h1>
-              <p style={{ fontSize: '11px', color: '#666', margin: '0.25rem 0 0' }}>Cenários de Fotografia</p>
+              <h1 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: '#000', whiteSpace: 'nowrap' }}>Samara Assi Fotografia</h1>
+              <p style={{ fontSize: '11px', color: '#666', margin: '0.25rem 0 0' }}>Cenários</p>
             </div>
           </div>
           <button onClick={() => { window.location.hash = '#admin'; setCurrentHash('#admin'); }} style={{ padding: '8px 16px', background: '#000', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', flexShrink: 0 }}>Admin</button>
