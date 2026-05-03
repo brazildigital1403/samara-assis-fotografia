@@ -475,7 +475,7 @@ export default function CenariosPlatform() {
     return (<><style>{GLOBAL_CSS}</style>
       <div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
         <header style={{ background: 'white', borderBottom: '1px solid #f0f0f0', padding: '1rem', position: 'sticky', top: 0, zIndex: 100 }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+          <div style={{ maxWidth: '1600px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, flex: 1 }}>
               <LogoIcon src={logoUrl} />
               <h1 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: '#000', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Samara Assis Fotografia</h1>
@@ -483,7 +483,7 @@ export default function CenariosPlatform() {
             <button onClick={() => setSelectedScenario(null)} style={{ padding: '8px 16px', background: 'white', border: '1px solid #d5d5d5', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: '#000', whiteSpace: 'nowrap', flexShrink: 0 }}>← Voltar</button>
           </div>
         </header>
-        <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '1rem' }}>
+        <main style={{ maxWidth: '1600px', margin: '0 auto', padding: '1rem' }}>
           <div style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
             <h1 className="sa-detail-title-mobile">{selectedScenario.titulo}</h1>
             <div className="sa-detail-grid">
@@ -517,7 +517,7 @@ export default function CenariosPlatform() {
   if (isAuthenticated && currentHash === '#admin') {
     return (<><style>{GLOBAL_CSS}</style>
       <div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', padding: '1rem', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1600px', margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <h1 style={{ fontSize: '28px', fontWeight: '700', margin: 0, color: '#000' }}>Admin</h1>
@@ -702,13 +702,13 @@ export default function CenariosPlatform() {
       />
       {/* Sub-header com busca dedicada do catálogo */}
       <div style={{ background: 'white', borderBottom: '1px solid #f0f0f0', padding: '0.75rem 1rem', position: 'sticky', top: '64px', zIndex: 99 }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
+        <div style={{ maxWidth: '1600px', margin: '0 auto', position: 'relative' }}>
           <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#999' }} />
           <input type="text" placeholder="Buscar cenários..." value={filters.search} onChange={e => setFilters({ ...filters, search: e.target.value })} style={{ width: '100%', padding: '10px 14px 10px 40px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', color: '#000', boxSizing: 'border-box' }} />
         </div>
       </div>
       <div style={{ background: 'white', borderBottom: '1px solid #f0f0f0', padding: '0.75rem 1rem' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1600px', margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.5rem' }}>
             <div style={{ position: 'relative' }} ref={filterDropdownRef}>
               <button onClick={() => setExpandedFilter(expandedFilter === 'age' ? null : 'age')} style={{ width: '100%', padding: '10px 12px', background: filters.ageRanges.length > 0 ? '#000' : '#f9f9f9', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: filters.ageRanges.length > 0 ? 'white' : '#000', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -741,7 +741,7 @@ export default function CenariosPlatform() {
           </div>
         </div>
       </div>
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <main style={{ maxWidth: '1600px', margin: '0 auto', padding: '2rem 1rem' }}>
         {scenarios.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
             <CameraIcon />
