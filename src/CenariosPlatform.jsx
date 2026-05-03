@@ -350,7 +350,7 @@ export default function CenariosPlatform() {
           <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, flex: 1 }}>
               <LogoIcon src={logoUrl} />
-              <h1 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: '#000', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Samara Assi</h1>
+              <h1 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: '#000', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Samara Assi Fotografia</h1>
             </div>
             <button onClick={() => setSelectedScenario(null)} style={{ padding: '8px 16px', background: 'white', border: '1px solid #d5d5d5', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: '#000', whiteSpace: 'nowrap', flexShrink: 0 }}>← Voltar</button>
           </div>
