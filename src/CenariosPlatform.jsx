@@ -6,6 +6,7 @@ import {
   atualizarCenario, 
   deletarCenario 
 } from './supabaseClient';
+import LandingPage from './LandingPage';
 
 const GLOBAL_CSS = `
   @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -664,6 +665,11 @@ export default function CenariosPlatform() {
         </div>
         {editingScenario && (<ModalEdicao scenario={editingScenario} onSave={handleSaveEdit} onClose={() => !saving && setEditingScenario(null)} isSaving={saving} />)}
       </div></>);
+  }
+
+  // Se não está em #catalogo nem em #admin nem com cenário aberto, mostra a Landing Page
+  if (currentHash !== '#catalogo') {
+    return <LandingPage logoUrl={logoUrl} onIrParaCatalogo={() => { window.location.hash = '#catalogo'; setCurrentHash('#catalogo'); }} />;
   }
 
   return (<><style>{GLOBAL_CSS}</style>
