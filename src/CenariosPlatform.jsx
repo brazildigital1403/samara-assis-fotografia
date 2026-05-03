@@ -32,6 +32,9 @@ const GLOBAL_CSS = `
     .sa-footer-sep-desktop { display: none; }
     .sa-footer-sep-mobile { display: inline; }
   }
+
+  /* Label de form: alinhado à esquerda, padronizado */
+  .sa-form-label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 6px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; }
   .sa-gallery-main { position: relative; width: 100%; height: 500px; border-radius: 12px; overflow: hidden; margin-bottom: 12px; background: #1a1a1a; }
   @media (max-width: 768px) { .sa-gallery-main { height: 360px !important; } }
   .sa-gallery-img { width: 100%; height: 100%; object-fit: contain; cursor: pointer; display: block; }
@@ -145,9 +148,7 @@ function ModalEdicao({ scenario, onSave, onClose, isSaving }) {
     onSave({ ...scenario, ...editData, imagemUrl: editData.imagemUrl, imagens: galeria });
   };
   const inputStyle = { width: '100%', padding: '10px 12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', fontFamily: 'inherit' };
-  const inputCenter = { ...inputStyle, textAlign: 'center' };
-  const inputCenterSelect = { ...inputCenter, textAlignLast: 'center' };
-  const labelStyle = { display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' };
+  const labelStyle = { display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'left' };
 
   return (<div className="sa-modal-overlay" onClick={isSaving ? undefined : onClose}>
     <div className="sa-modal" onClick={(e) => e.stopPropagation()}>
@@ -158,7 +159,7 @@ function ModalEdicao({ scenario, onSave, onClose, isSaving }) {
       <div style={{ padding: '1.5rem' }}>
         <div style={{ marginBottom: '1rem' }}>
           <label style={labelStyle}>Título *</label>
-          <input type="text" value={editData.titulo} onChange={e => setEditData({ ...editData, titulo: e.target.value })} placeholder="Ex: Newborn - 7 Dias" style={inputCenter} />
+          <input type="text" value={editData.titulo} onChange={e => setEditData({ ...editData, titulo: e.target.value })} placeholder="Ex: Newborn - 7 Dias" style={inputStyle} />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <label style={labelStyle}>📸 URL da Capa *</label>
@@ -176,17 +177,17 @@ function ModalEdicao({ scenario, onSave, onClose, isSaving }) {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
           <div><label style={labelStyle}>Categoria</label>
-            <select value={editData.categoria} onChange={e => setEditData({ ...editData, categoria: e.target.value })} style={inputCenterSelect}>
+            <select value={editData.categoria} onChange={e => setEditData({ ...editData, categoria: e.target.value })} style={inputStyle}>
               <option value="newborn">Newborn</option><option value="acompanhamento">Acompanhamento</option><option value="temático">Temático</option><option value="clean">Clean</option><option value="gemeos">Gêmeos</option><option value="smash">Smash The Cake</option><option value="gestante">Gestante</option>
             </select></div>
           <div><label style={labelStyle}>Sexo</label>
-            <select value={editData.genero} onChange={e => setEditData({ ...editData, genero: e.target.value })} style={inputCenterSelect}>
+            <select value={editData.genero} onChange={e => setEditData({ ...editData, genero: e.target.value })} style={inputStyle}>
               <option value="all">Menina - Menino</option><option value="menina">Menina</option><option value="menino">Menino</option>
             </select></div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-          <div><label style={labelStyle}>Idade Mín (meses)</label><input type="number" value={editData.ageMonthMin} onChange={e => setEditData({ ...editData, ageMonthMin: parseInt(e.target.value) || 0 })} style={inputCenter} /></div>
-          <div><label style={labelStyle}>Idade Máx (meses)</label><input type="number" value={editData.ageMonthMax} onChange={e => setEditData({ ...editData, ageMonthMax: parseInt(e.target.value) || 0 })} style={inputCenter} /></div>
+          <div><label style={labelStyle}>Idade Mín (meses)</label><input type="number" value={editData.ageMonthMin} onChange={e => setEditData({ ...editData, ageMonthMin: parseInt(e.target.value) || 0 })} style={inputStyle} /></div>
+          <div><label style={labelStyle}>Idade Máx (meses)</label><input type="number" value={editData.ageMonthMax} onChange={e => setEditData({ ...editData, ageMonthMax: parseInt(e.target.value) || 0 })} style={inputStyle} /></div>
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', padding: '12px', background: '#f5f5f5', borderRadius: '8px' }}>
@@ -231,6 +232,11 @@ export default function CenariosPlatform() {
   const [currentHash, setCurrentHash] = useState(typeof window !== 'undefined' ? window.location.hash : '');
   const filterDropdownRef = useRef(null);
 
+  // Filtros do ADMIN (separados dos filtros do catálogo público)
+  const [adminFilters, setAdminFilters] = useState({ ageRanges: [], categoria: 'all', gender: 'all', search: '' });
+  const [adminExpandedFilter, setAdminExpandedFilter] = useState(null);
+  const adminFilterDropdownRef = useRef(null);
+
   // Fecha o dropdown de filtros ao clicar fora, apertar Esc ou rolar a página
   useEffect(() => {
     if (!expandedFilter) return;
@@ -255,6 +261,26 @@ export default function CenariosPlatform() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [expandedFilter]);
+
+  // Mesma lógica de fechar dropdown, mas para o filtro do ADMIN
+  useEffect(() => {
+    if (!adminExpandedFilter) return;
+    const handleClickOutside = (event) => {
+      if (adminFilterDropdownRef.current && !adminFilterDropdownRef.current.contains(event.target)) {
+        setAdminExpandedFilter(null);
+      }
+    };
+    const handleEscape = (event) => { if (event.key === 'Escape') setAdminExpandedFilter(null); };
+    const handleScroll = () => setAdminExpandedFilter(null);
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [adminExpandedFilter]);
 
   // Escuta mudança do hash na URL (quando clica em link "Admin" ou usa back/forward do navegador)
   useEffect(() => {
@@ -362,6 +388,42 @@ export default function CenariosPlatform() {
     return counts;
   }, [scenarios, filters.categoria, filters.gender, filters.search]);
 
+  // ========= FILTROS DO ADMIN (mesma lógica do catálogo, state separado) =========
+  const toggleFaixaAdmin = (faixaId) => {
+    setAdminFilters(prev => ({
+      ...prev,
+      ageRanges: prev.ageRanges.includes(faixaId)
+        ? prev.ageRanges.filter(id => id !== faixaId)
+        : [...prev.ageRanges, faixaId]
+    }));
+  };
+
+  const filteredAdminScenarios = useMemo(() => {
+    return scenarios.filter(s => {
+      const ageMatch = adminFilters.ageRanges.length === 0 || adminFilters.ageRanges.some(id => {
+        const faixa = FAIXAS_ETARIAS.find(f => f.id === id);
+        return faixa && cenarioMatchFaixa(s, faixa);
+      });
+      const catMatch = adminFilters.categoria === 'all' || s.categoria === adminFilters.categoria;
+      const genMatch = adminFilters.gender === 'all' || s.genero === 'all' || s.genero === adminFilters.gender;
+      const searchMatch = s.titulo.toLowerCase().includes(adminFilters.search.toLowerCase()) || (s.descricaoBreve || '').toLowerCase().includes(adminFilters.search.toLowerCase());
+      return ageMatch && catMatch && genMatch && searchMatch;
+    }).sort((a, b) => a.titulo.localeCompare(b.titulo));
+  }, [scenarios, adminFilters]);
+
+  const contagemAdminPorFaixa = useMemo(() => {
+    const counts = {};
+    FAIXAS_ETARIAS.forEach(faixa => {
+      counts[faixa.id] = scenarios.filter(s => {
+        const catMatch = adminFilters.categoria === 'all' || s.categoria === adminFilters.categoria;
+        const genMatch = adminFilters.gender === 'all' || s.genero === 'all' || s.genero === adminFilters.gender;
+        const searchMatch = s.titulo.toLowerCase().includes(adminFilters.search.toLowerCase()) || (s.descricaoBreve || '').toLowerCase().includes(adminFilters.search.toLowerCase());
+        return catMatch && genMatch && searchMatch && cenarioMatchFaixa(s, faixa);
+      }).length;
+    });
+    return counts;
+  }, [scenarios, adminFilters.categoria, adminFilters.gender, adminFilters.search]);
+
   if (loading) return <LoadingScreen message="Carregando cenários..." />;
 
   if (error) {
@@ -461,13 +523,13 @@ export default function CenariosPlatform() {
 
             {/* TÍTULO */}
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Título</label>
-              <input type="text" value={newScenario.titulo} onChange={e => setNewScenario({ ...newScenario, titulo: e.target.value })} placeholder="Ex: Newborn - 7 Dias" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', textAlign: 'center' }} />
+              <label className="sa-form-label">Título</label>
+              <input type="text" value={newScenario.titulo} onChange={e => setNewScenario({ ...newScenario, titulo: e.target.value })} placeholder="Ex: Newborn - 7 Dias" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box' }} />
             </div>
 
             {/* URL DA CAPA */}
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>📸 URL da Capa</label>
+              <label className="sa-form-label">📸 URL da Capa</label>
               <input type="text" value={newScenario.imagemUrl} onChange={e => setNewScenario({ ...newScenario, imagemUrl: e.target.value })} placeholder="https://...capa.jpg" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '13px', fontFamily: 'monospace', background: '#f5f5f5', boxSizing: 'border-box' }} />
               {newScenario.imagemUrl && (
                 <div style={{ marginTop: '10px', textAlign: 'center' }}>
@@ -478,21 +540,21 @@ export default function CenariosPlatform() {
 
             {/* URLs ADICIONAIS DA GALERIA */}
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>🖼️ URLs da Galeria (uma por linha)</label>
+              <label className="sa-form-label">🖼️ URLs da Galeria (uma por linha)</label>
               <textarea value={newScenario.imagens.join('\n')} onChange={e => { const urls = e.target.value.split('\n').filter(u => u.trim()); setNewScenario({ ...newScenario, imagens: urls }); }} placeholder="https://...foto1.jpg&#10;https://...foto2.jpg&#10;https://...foto3.jpg" rows="4" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '13px', fontFamily: 'monospace', background: '#f5f5f5', boxSizing: 'border-box', resize: 'vertical' }} />
-              <p style={{ fontSize: '11px', color: '#666', margin: '6px 0 0', textAlign: 'center' }}>{newScenario.imagens.length} foto(s) na galeria - 3 a 5 fotos recomendadas</p>
+              <p style={{ fontSize: '11px', color: '#666', margin: '6px 0 0' }}>{newScenario.imagens.length} foto(s) na galeria - 3 a 5 fotos recomendadas</p>
             </div>
 
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
               <div style={{ flex: 1, minWidth: '120px' }}>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Categoria</label>
-                <select value={newScenario.categoria} onChange={e => setNewScenario({ ...newScenario, categoria: e.target.value })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', textAlign: 'center', textAlignLast: 'center' }}>
+                <label className="sa-form-label">Categoria</label>
+                <select value={newScenario.categoria} onChange={e => setNewScenario({ ...newScenario, categoria: e.target.value })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box' }}>
                   <option value="newborn">Newborn</option><option value="acompanhamento">Acompanhamento</option><option value="temático">Temático</option><option value="clean">Clean</option><option value="gemeos">Gêmeos</option><option value="smash">Smash The Cake</option><option value="gestante">Gestante</option>
                 </select>
               </div>
               <div style={{ flex: 1, minWidth: '120px' }}>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Sexo</label>
-                <select value={newScenario.genero} onChange={e => setNewScenario({ ...newScenario, genero: e.target.value })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', textAlign: 'center', textAlignLast: 'center' }}>
+                <label className="sa-form-label">Sexo</label>
+                <select value={newScenario.genero} onChange={e => setNewScenario({ ...newScenario, genero: e.target.value })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box' }}>
                   <option value="all">Menina - Menino</option><option value="menina">Menina</option><option value="menino">Menino</option>
                 </select>
               </div>
@@ -500,22 +562,22 @@ export default function CenariosPlatform() {
 
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
               <div style={{ flex: 1, minWidth: '120px' }}>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Idade Mín (meses)</label>
-                <input type="number" min="0" value={newScenario.ageMonthMin} onChange={e => setNewScenario({ ...newScenario, ageMonthMin: parseInt(e.target.value) || 0 })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', textAlign: 'center' }} />
+                <label className="sa-form-label">Idade Mín (meses)</label>
+                <input type="number" min="0" value={newScenario.ageMonthMin} onChange={e => setNewScenario({ ...newScenario, ageMonthMin: parseInt(e.target.value) || 0 })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box' }} />
               </div>
               <div style={{ flex: 1, minWidth: '120px' }}>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Idade Máx (meses)</label>
-                <input type="number" min="0" value={newScenario.ageMonthMax} onChange={e => setNewScenario({ ...newScenario, ageMonthMax: parseInt(e.target.value) || 12 })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', textAlign: 'center' }} />
+                <label className="sa-form-label">Idade Máx (meses)</label>
+                <input type="number" min="0" value={newScenario.ageMonthMax} onChange={e => setNewScenario({ ...newScenario, ageMonthMax: parseInt(e.target.value) || 12 })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box' }} />
               </div>
             </div>
 
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Descrição Curta</label>
+              <label className="sa-form-label">Descrição Curta</label>
               <textarea value={newScenario.descricaoBreve} onChange={e => setNewScenario({ ...newScenario, descricaoBreve: e.target.value })} placeholder="Resumo em uma linha" rows="2" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', resize: 'vertical' }} />
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Descrição Detalhada</label>
+              <label className="sa-form-label">Descrição Detalhada</label>
               <textarea value={newScenario.descricaoDetalhada} onChange={e => setNewScenario({ ...newScenario, descricaoDetalhada: e.target.value })} placeholder="Detalhes do cenário, faixa etária recomendada, observações..." rows="4" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', resize: 'vertical' }} />
             </div>
 
@@ -523,20 +585,70 @@ export default function CenariosPlatform() {
               {saving ? (<><Loader2 size={16} className="sa-spin" />Salvando...</>) : (<><PlusIcon /> Adicionar Cenário</>)}
             </button>
           </div>
-          <h2 style={{ fontSize: '20px', fontWeight: '700', margin: '0 0 1rem', color: '#000' }}>Cenários ({scenarios.length})</h2>
+          {/* CABEÇALHO DA LISTA + FILTROS */}
+          <h2 style={{ fontSize: '20px', fontWeight: '700', margin: '0 0 1rem', color: '#000' }}>
+            Cenários ({filteredAdminScenarios.length}{filteredAdminScenarios.length !== scenarios.length ? ` de ${scenarios.length}` : ''})
+          </h2>
+
+          {scenarios.length > 0 && (
+            <div style={{ background: 'white', borderRadius: '12px', padding: '1rem', marginBottom: '1rem', boxShadow: '0 2px 6px rgba(0,0,0,0.04)' }}>
+              {/* BUSCA */}
+              <div style={{ position: 'relative', marginBottom: '0.75rem' }}>
+                <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#999' }} />
+                <input type="text" placeholder="Buscar cenários..." value={adminFilters.search} onChange={e => setAdminFilters({ ...adminFilters, search: e.target.value })} style={{ width: '100%', padding: '10px 14px 10px 40px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', color: '#000', boxSizing: 'border-box' }} />
+              </div>
+
+              {/* FILTROS */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.5rem' }}>
+                <div style={{ position: 'relative' }} ref={adminFilterDropdownRef}>
+                  <button onClick={() => setAdminExpandedFilter(adminExpandedFilter === 'age' ? null : 'age')} style={{ width: '100%', padding: '10px 12px', background: adminFilters.ageRanges.length > 0 ? '#000' : '#f9f9f9', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: adminFilters.ageRanges.length > 0 ? 'white' : '#000', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span>{adminFilters.ageRanges.length > 0 ? `Idade (${adminFilters.ageRanges.length})` : 'Idade'}</span>
+                    <ChevronDown size={14} style={{ transform: adminExpandedFilter === 'age' ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+                  </button>
+                  {adminExpandedFilter === 'age' && (<div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, background: 'white', border: '1px solid #e0e0e0', borderRadius: '8px', padding: '8px', zIndex: 10, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', minWidth: '220px' }}>
+                    {FAIXAS_ETARIAS.map(faixa => {
+                      const checked = adminFilters.ageRanges.includes(faixa.id);
+                      const count = contagemAdminPorFaixa[faixa.id] || 0;
+                      return (
+                        <label key={faixa.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px', cursor: count === 0 ? 'not-allowed' : 'pointer', borderRadius: '6px', opacity: count === 0 ? 0.4 : 1, transition: 'background 0.15s' }} onMouseEnter={e => { if (count > 0) e.currentTarget.style.background = '#f5f5f5'; }} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <input type="checkbox" checked={checked} disabled={count === 0} onChange={() => toggleFaixaAdmin(faixa.id)} style={{ width: '16px', height: '16px', cursor: count === 0 ? 'not-allowed' : 'pointer', accentColor: '#000' }} />
+                            <span style={{ fontSize: '13px', color: '#000' }}>{faixa.label}</span>
+                          </div>
+                          <span style={{ fontSize: '12px', color: '#999', fontWeight: '500' }}>({count})</span>
+                        </label>
+                      );
+                    })}
+                  </div>)}
+                </div>
+                <select value={adminFilters.categoria} onChange={e => setAdminFilters({ ...adminFilters, categoria: e.target.value })} style={{ padding: '10px 12px', background: '#f9f9f9', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#000', cursor: 'pointer' }}>
+                  <option value="all">Categoria</option><option value="newborn">Newborn</option><option value="acompanhamento">Acompanhamento</option><option value="temático">Temático</option><option value="clean">Clean</option><option value="gemeos">Gêmeos</option><option value="smash">Smash The Cake</option><option value="gestante">Gestante</option>
+                </select>
+                <select value={adminFilters.gender} onChange={e => setAdminFilters({ ...adminFilters, gender: e.target.value })} style={{ padding: '10px 12px', background: '#f9f9f9', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#000', cursor: 'pointer' }}>
+                  <option value="all">Sexo</option><option value="menina">Menina</option><option value="menino">Menino</option>
+                </select>
+                <button onClick={() => setAdminFilters({ ageRanges: [], categoria: 'all', gender: 'all', search: '' })} style={{ padding: '10px 12px', background: 'white', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#666', cursor: 'pointer' }}>✕ Limpar</button>
+              </div>
+            </div>
+          )}
+
           {scenarios.length === 0 ? (
             <div style={{ background: 'white', borderRadius: '12px', padding: '3rem 2rem', textAlign: 'center', marginBottom: '2rem' }}>
               <CameraIcon />
               <p style={{ fontSize: '14px', color: '#999', margin: '1rem 0 0' }}>Nenhum cenário cadastrado ainda. Use o formulário acima!</p>
             </div>
+          ) : filteredAdminScenarios.length === 0 ? (
+            <div style={{ background: 'white', borderRadius: '12px', padding: '3rem 2rem', textAlign: 'center', marginBottom: '2rem' }}>
+              <p style={{ fontSize: '14px', color: '#999', margin: 0 }}>Nenhum cenário encontrado com esses filtros.</p>
+            </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-              {scenarios.sort((a, b) => a.titulo.localeCompare(b.titulo)).map(s => (
+              {filteredAdminScenarios.map(s => (
                 <div key={s.id} style={{ background: 'white', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 2px 6px rgba(0,0,0,0.06)' }}>
                   <img src={s.imagemUrl} alt={s.titulo} style={{ width: '100%', height: '120px', objectFit: 'cover', display: 'block' }} />
-                  <div style={{ padding: '0.75rem' }}>
+                  <div style={{ padding: '0.75rem', textAlign: 'center' }}>
                     <h3 style={{ fontSize: '13px', fontWeight: '700', margin: '0 0 0.4rem', color: '#000', lineHeight: '1.3' }}>{s.titulo}</h3>
-                    <div style={{ display: 'flex', gap: '4px', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: '8px', marginBottom: '0.6rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                       <span style={{ fontSize: '10px', color: '#999' }}>📷 {s.imagens?.length || 1}</span>
                       {s.destaques && <span style={{ fontSize: '10px', color: '#ff9800' }}>⭐ Destaque</span>}
                     </div>
