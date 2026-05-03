@@ -300,9 +300,15 @@ export default function CenariosPlatform() {
   const isTelaHash = TELA_HASHES.includes(currentHash);
   useEffect(() => {
     if (isTelaHash) {
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      // Triple-scroll para garantir compatibilidade com iOS Safari/Chrome mobile
+      // (alguns browsers ignoram um ou outro método dependendo da situação)
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
     }
-  }, [selectedScenario, isTelaHash, isAuthenticated]);
+    // Importante: depender de currentHash (não de isTelaHash) para que a transição
+    // landing ('') → catálogo ('#catalogo') dispare o effect mesmo que ambos sejam telas.
+  }, [selectedScenario, currentHash, isAuthenticated]);
 
   useEffect(() => {
     const loadLogo = async () => {
