@@ -38,26 +38,51 @@ const TEMAS_GEMEOS = [
 ];
 
 const LANDING_CSS = `
-  .lp-page * { box-sizing: border-box; }
-  .lp-page { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; min-height: 100vh; background: #fff; color: #000; }
+  /* Inter direto via @import (funciona mesmo se index.html não tiver o link) */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-  /* HEADER (compartilhado entre Landing e Catálogo) */
-  .lp-header { background: rgba(255,255,255,0.96); backdrop-filter: blur(10px); border-bottom: 1px solid #f0f0f0; padding: 0.75rem 1rem; position: sticky; top: 0; z-index: 100; }
-  .lp-header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-  .lp-header-brand { display: flex; align-items: center; gap: 0.75rem; min-width: 0; cursor: pointer; }
-  .lp-header-brand h1 { font-size: 16px; font-weight: 700; margin: 0; color: #000; white-space: nowrap; }
-  .lp-header-brand p { font-size: 10px; color: #888; margin: 2px 0 0; }
-  .lp-header-nav { display: flex; gap: 0.25rem; align-items: center; flex-wrap: nowrap; }
-  .lp-header-nav button { padding: 8px 12px; font-size: 13px; font-weight: 500; color: #555; text-decoration: none; border-radius: 6px; transition: all 0.2s; white-space: nowrap; cursor: pointer; background: none; border: none; font-family: inherit; }
+  .lp-page * { box-sizing: border-box; }
+  .lp-page { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; min-height: 100vh; background: #fff; color: #000; }
+
+  /* ============================================
+     HEADER (compartilhado entre Landing e Catálogo)
+     ============================================ */
+  .lp-header { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 100; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .lp-header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.875rem 1.25rem; min-height: 64px; }
+
+  /* Brand (logo + nome) */
+  .lp-header-brand { display: flex; align-items: center; gap: 0.75rem; min-width: 0; cursor: pointer; transition: opacity 0.2s; flex-shrink: 1; }
+  .lp-header-brand:hover { opacity: 0.7; }
+  .lp-header-brand-img { width: 38px; height: 38px; object-fit: contain; flex-shrink: 0; }
+  .lp-header-brand-text { display: flex; flex-direction: column; min-width: 0; }
+  .lp-header-brand h1 { font-size: 15px; font-weight: 700; margin: 0; color: #000; white-space: nowrap; letter-spacing: -0.2px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; }
+  .lp-header-brand p { font-size: 10px; color: #999; margin: 2px 0 0; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+
+  /* Nav */
+  .lp-header-nav { display: flex; gap: 0.25rem; align-items: center; flex-wrap: nowrap; flex-shrink: 0; }
+  .lp-header-nav button { padding: 8px 14px; font-size: 13px; font-weight: 500; color: #555; text-decoration: none; border-radius: 8px; transition: all 0.15s ease; white-space: nowrap; cursor: pointer; background: none; border: none; font-family: inherit; line-height: 1; }
   .lp-header-nav button:hover { background: #f5f5f5; color: #000; }
-  .lp-header-nav .lp-cta { background: #000; color: white; padding: 8px 16px; font-weight: 600; }
-  .lp-header-nav .lp-cta:hover { background: #333; color: white; }
-  .lp-header-nav .lp-admin { background: #f5f5f5; color: #555; }
-  .lp-header-nav .lp-admin:hover { background: #e8e8e8; color: #000; }
+  .lp-header-nav .lp-cta { background: #000; color: white; padding: 9px 18px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .lp-header-nav .lp-cta:hover { background: #1a1a1a; color: white; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.18); }
+  .lp-header-nav .lp-admin { background: transparent; color: #888; border: 1px solid #e8e8e8; padding: 8px 12px; }
+  .lp-header-nav .lp-admin:hover { background: #f5f5f5; color: #000; border-color: #d5d5d5; }
+
+  /* Mobile */
   @media (max-width: 900px) {
+    .lp-header-inner { padding: 0.75rem 1rem; min-height: 60px; }
+    .lp-header-brand-img { width: 34px; height: 34px; }
+    .lp-header-brand h1 { font-size: 14px; }
     .lp-header-brand p { display: none; }
     .lp-header-nav button.lp-nav-mob-hide { display: none; }
-    .lp-header-nav button { padding: 7px 10px; font-size: 12px; }
+    .lp-header-nav button { padding: 7px 12px; font-size: 12px; }
+    .lp-header-nav .lp-cta { padding: 8px 14px; }
+    .lp-header-nav .lp-admin { padding: 7px 10px; }
+    .lp-header-nav .lp-admin span { display: none; }
+  }
+  @media (max-width: 380px) {
+    .lp-header-brand h1 { font-size: 13px; }
+    .lp-header-nav { gap: 4px; }
+    .lp-header-nav button { padding: 6px 10px; font-size: 11px; }
   }
 
   /* HERO */
@@ -172,8 +197,8 @@ export function LandingHeader({ logoUrl, onIrParaCatalogo, onIrParaInicio, onIrP
       <header className="lp-header">
         <div className="lp-header-inner">
           <div className="lp-header-brand" onClick={onIrParaInicio}>
-            {logoUrl ? <img src={logoUrl} alt="Samara Assis Fotografia" style={{ width: 36, height: 36, objectFit: 'contain' }} /> : null}
-            <div>
+            {logoUrl ? <img src={logoUrl} alt="Samara Assis Fotografia" className="lp-header-brand-img" /> : null}
+            <div className="lp-header-brand-text">
               <h1>Samara Assis Fotografia</h1>
               <p>Desde 2003</p>
             </div>
@@ -184,7 +209,10 @@ export function LandingHeader({ logoUrl, onIrParaCatalogo, onIrParaInicio, onIrP
             <button onClick={() => goSection('contato')} className="lp-nav-mob-hide">Contato</button>
             {currentPage !== 'catalogo' && <button onClick={onIrParaCatalogo} className="lp-cta">Catálogo</button>}
             {currentPage === 'catalogo' && <button onClick={onIrParaInicio} className="lp-cta">Início</button>}
-            <button onClick={onIrParaAdmin} className="lp-admin" title="Área administrativa"><Lock size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />Admin</button>
+            <button onClick={onIrParaAdmin} className="lp-admin" title="Área administrativa" aria-label="Admin">
+              <Lock size={13} style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 5 }} />
+              <span>Admin</span>
+            </button>
           </nav>
         </div>
       </header>
