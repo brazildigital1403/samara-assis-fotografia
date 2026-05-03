@@ -184,7 +184,7 @@ function ModalEdicao({ scenario, onSave, onClose, isSaving }) {
             <select value={editData.categoria} onChange={e => setEditData({ ...editData, categoria: e.target.value })} style={inputStyle}>
               <option value="newborn">Newborn</option><option value="acompanhamento">Acompanhamento</option><option value="temático">Temático</option><option value="clean">Clean</option><option value="gemeos">Gêmeos</option><option value="smash">Smash The Cake</option><option value="gestante">Gestante</option>
             </select></div>
-          <div><label style={labelStyle}>Sexo</label>
+          <div><label style={labelStyle}>Gênero</label>
             <select value={editData.genero} onChange={e => setEditData({ ...editData, genero: e.target.value })} style={inputStyle}>
               <option value="all">Menina - Menino</option><option value="menina">Menina</option><option value="menino">Menino</option>
             </select></div>
@@ -506,7 +506,7 @@ export default function CenariosPlatform() {
                     <p className="sa-text-left" style={{ fontSize: '14px', fontWeight: '600', margin: 0, color: '#000' }}>{categoriaTexto(selectedScenario.categoria)}</p>
                   </div>
                   <div className="sa-text-left">
-                    <p className="sa-text-left" style={{ fontSize: '11px', fontWeight: '700', color: '#666', margin: '0 0 0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Sexo</p>
+                    <p className="sa-text-left" style={{ fontSize: '11px', fontWeight: '700', color: '#666', margin: '0 0 0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Gênero</p>
                     <p className="sa-text-left" style={{ fontSize: '14px', fontWeight: '600', margin: 0, color: '#000' }}>{generoTexto(selectedScenario.genero)}</p>
                   </div>
                 </div>
@@ -573,7 +573,7 @@ export default function CenariosPlatform() {
                 </select>
               </div>
               <div style={{ flex: 1, minWidth: '120px' }}>
-                <label className="sa-form-label">Sexo</label>
+                <label className="sa-form-label">Gênero</label>
                 <select value={newScenario.genero} onChange={e => setNewScenario({ ...newScenario, genero: e.target.value })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box' }}>
                   <option value="all">Menina - Menino</option><option value="menina">Menina</option><option value="menino">Menino</option>
                 </select>
@@ -645,7 +645,7 @@ export default function CenariosPlatform() {
                   <option value="all">Categoria</option><option value="newborn">Newborn</option><option value="acompanhamento">Acompanhamento</option><option value="temático">Temático</option><option value="clean">Clean</option><option value="gemeos">Gêmeos</option><option value="smash">Smash The Cake</option><option value="gestante">Gestante</option>
                 </select>
                 <select value={adminFilters.gender} onChange={e => setAdminFilters({ ...adminFilters, gender: e.target.value })} style={{ padding: '10px 12px', background: '#f9f9f9', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#000', cursor: 'pointer' }}>
-                  <option value="all">Sexo</option><option value="menina">Menina</option><option value="menino">Menino</option>
+                  <option value="all">Gênero</option><option value="menina">Menina</option><option value="menino">Menino</option>
                 </select>
                 <button onClick={() => setAdminFilters({ ageRanges: [], categoria: 'all', gender: 'all', search: '' })} style={{ padding: '10px 12px', background: 'white', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#666', cursor: 'pointer' }}>✕ Limpar</button>
               </div>
@@ -741,7 +741,7 @@ export default function CenariosPlatform() {
               <option value="all">Categoria</option><option value="newborn">Newborn</option><option value="acompanhamento">Acompanhamento</option><option value="temático">Temático</option><option value="clean">Clean</option><option value="gemeos">Gêmeos</option><option value="smash">Smash The Cake</option><option value="gestante">Gestante</option>
             </select>
             <select value={filters.gender} onChange={e => setFilters({ ...filters, gender: e.target.value })} style={{ padding: '10px 12px', background: '#f9f9f9', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#000', cursor: 'pointer' }}>
-              <option value="all">Sexo</option><option value="menina">Menina</option><option value="menino">Menino</option>
+              <option value="all">Gênero</option><option value="menina">Menina</option><option value="menino">Menino</option>
             </select>
             <button onClick={() => setFilters({ ageRanges: [], categoria: 'all', gender: 'all', search: '' })} style={{ padding: '10px 12px', background: 'white', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#666', cursor: 'pointer' }}>✕ Limpar</button>
           </div>

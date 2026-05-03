@@ -371,7 +371,7 @@ export default function LandingPage({ logoUrl, onIrParaCatalogo, onIrParaAdmin }
               {TEMAS_GEMEOS.map(t => <div key={t} className="lp-tema-tag">{t}</div>)}
             </div>
             <p style={{ marginTop: '2rem', fontSize: 13, color: '#888' }}>
-              No momento estamos atendendo somente ensaios para gemelares de sexo feminino e masculino.
+              No momento estamos atendendo somente ensaios para gemelares de gênero feminino e masculino.
             </p>
           </div>
         </section>
