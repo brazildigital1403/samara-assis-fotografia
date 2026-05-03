@@ -38,6 +38,21 @@ function categoriaTexto(c) {
   return t[c] || (c ? c.charAt(0).toUpperCase() + c.slice(1) : 'Sem categoria');
 }
 
+// Faixas etárias predefinidas (estilo Webmotors)
+const FAIXAS_ETARIAS = [
+  { id: '0-2', label: '0 a 2 meses', min: 0, max: 2 },
+  { id: '3-5', label: '3 a 5 meses', min: 3, max: 5 },
+  { id: '6-8', label: '6 a 8 meses', min: 6, max: 8 },
+  { id: '9-11', label: '9 a 11 meses', min: 9, max: 11 },
+  { id: '12-24', label: '1 a 2 anos', min: 12, max: 24 }
+];
+
+// Verifica se o cenário se sobrepõe a alguma das faixas selecionadas
+// Sobreposição = qualquer parte da idade do cenário cai dentro da faixa
+function cenarioMatchFaixa(scenario, faixa) {
+  return scenario.ageMonthMin <= faixa.max && scenario.ageMonthMax >= faixa.min;
+}
+
 const LogoIcon = ({ src }) => {
   if (src) return <img src={src} alt="Samara Assi" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />;
   return (<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="10" r="4" stroke="currentColor" strokeWidth="2" fill="none"/><path d="M8 24c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" strokeWidth="2" fill="none"/></svg>);
@@ -181,7 +196,7 @@ export default function CenariosPlatform() {
   const [logoUrl, setLogoUrl] = useState('');
   const [expandedFilter, setExpandedFilter] = useState(null);
   const [editingScenario, setEditingScenario] = useState(null);
-  const [filters, setFilters] = useState({ ageMin: 0, ageMax: 60, categoria: 'all', gender: 'all', search: '' });
+  const [filters, setFilters] = useState({ ageRanges: [], categoria: 'all', gender: 'all', search: '' });
   const [newScenario, setNewScenario] = useState({ titulo: '', categoria: 'temático', ageMonthMin: 0, ageMonthMax: 12, genero: 'all', descricaoBreve: '', descricaoDetalhada: '', imagemUrl: '', imagens: [] });
   const [currentHash, setCurrentHash] = useState(typeof window !== 'undefined' ? window.location.hash : '');
 
@@ -248,21 +263,42 @@ export default function CenariosPlatform() {
     finally { setSaving(false); }
   };
 
-  const handleAgeChange = (type, value) => {
-    const v = Math.max(0, Math.min(60, parseInt(value) || 0));
-    if (type === 'min') setFilters({ ...filters, ageMin: Math.min(v, filters.ageMax) });
-    else setFilters({ ...filters, ageMax: Math.max(v, filters.ageMin) });
+  const toggleFaixa = (faixaId) => {
+    setFilters(prev => ({
+      ...prev,
+      ageRanges: prev.ageRanges.includes(faixaId)
+        ? prev.ageRanges.filter(id => id !== faixaId)
+        : [...prev.ageRanges, faixaId]
+    }));
   };
 
   const filteredScenarios = useMemo(() => {
     return scenarios.filter(s => {
-      const ageMatch = s.ageMonthMin >= filters.ageMin && s.ageMonthMax <= filters.ageMax;
+      // Idade: se nenhuma faixa marcada, passa todos. Se alguma marcada, precisa sobrepor a pelo menos 1
+      const ageMatch = filters.ageRanges.length === 0 || filters.ageRanges.some(id => {
+        const faixa = FAIXAS_ETARIAS.find(f => f.id === id);
+        return faixa && cenarioMatchFaixa(s, faixa);
+      });
       const catMatch = filters.categoria === 'all' || s.categoria === filters.categoria;
       const genMatch = filters.gender === 'all' || s.genero === 'all' || s.genero === filters.gender;
       const searchMatch = s.titulo.toLowerCase().includes(filters.search.toLowerCase()) || (s.descricaoBreve || '').toLowerCase().includes(filters.search.toLowerCase());
       return ageMatch && catMatch && genMatch && searchMatch;
     }).sort((a, b) => a.titulo.localeCompare(b.titulo));
   }, [scenarios, filters]);
+
+  // Conta cenários por faixa (respeitando os outros filtros, igual webmotors)
+  const contagemPorFaixa = useMemo(() => {
+    const counts = {};
+    FAIXAS_ETARIAS.forEach(faixa => {
+      counts[faixa.id] = scenarios.filter(s => {
+        const catMatch = filters.categoria === 'all' || s.categoria === filters.categoria;
+        const genMatch = filters.gender === 'all' || s.genero === 'all' || s.genero === filters.gender;
+        const searchMatch = s.titulo.toLowerCase().includes(filters.search.toLowerCase()) || (s.descricaoBreve || '').toLowerCase().includes(filters.search.toLowerCase());
+        return catMatch && genMatch && searchMatch && cenarioMatchFaixa(s, faixa);
+      }).length;
+    });
+    return counts;
+  }, [scenarios, filters.categoria, filters.gender, filters.search]);
 
   if (loading) return <LoadingScreen message="Carregando cenários..." />;
 
@@ -447,17 +483,26 @@ export default function CenariosPlatform() {
       </header>
       <div style={{ background: 'white', borderBottom: '1px solid #f0f0f0', padding: '0.75rem 1rem' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '0.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.5rem' }}>
             <div style={{ position: 'relative' }}>
-              <button onClick={() => setExpandedFilter(expandedFilter === 'age' ? null : 'age')} style={{ width: '100%', padding: '10px 12px', background: '#f9f9f9', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#000', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span>{filters.ageMin}-{filters.ageMax}m</span>
+              <button onClick={() => setExpandedFilter(expandedFilter === 'age' ? null : 'age')} style={{ width: '100%', padding: '10px 12px', background: filters.ageRanges.length > 0 ? '#000' : '#f9f9f9', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: filters.ageRanges.length > 0 ? 'white' : '#000', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span>{filters.ageRanges.length > 0 ? `Idade (${filters.ageRanges.length})` : 'Idade'}</span>
                 <ChevronDown size={14} style={{ transform: expandedFilter === 'age' ? 'rotate(180deg)' : 'rotate(0deg)' }} />
               </button>
-              {expandedFilter === 'age' && (<div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0, background: 'white', border: '1px solid #e0e0e0', borderRadius: '8px', padding: '12px', zIndex: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <input type="number" min="0" max="60" value={filters.ageMin} onChange={e => handleAgeChange('min', e.target.value)} style={{ width: '50%', padding: '6px', border: '1px solid #e0e0e0', borderRadius: '4px', fontSize: '12px' }} />
-                  <input type="number" min="0" max="60" value={filters.ageMax} onChange={e => handleAgeChange('max', e.target.value)} style={{ width: '50%', padding: '6px', border: '1px solid #e0e0e0', borderRadius: '4px', fontSize: '12px' }} />
-                </div>
+              {expandedFilter === 'age' && (<div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, background: 'white', border: '1px solid #e0e0e0', borderRadius: '8px', padding: '8px', zIndex: 10, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', minWidth: '220px' }}>
+                {FAIXAS_ETARIAS.map(faixa => {
+                  const checked = filters.ageRanges.includes(faixa.id);
+                  const count = contagemPorFaixa[faixa.id] || 0;
+                  return (
+                    <label key={faixa.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px', cursor: count === 0 ? 'not-allowed' : 'pointer', borderRadius: '6px', opacity: count === 0 ? 0.4 : 1, transition: 'background 0.15s' }} onMouseEnter={e => { if (count > 0) e.currentTarget.style.background = '#f5f5f5'; }} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <input type="checkbox" checked={checked} disabled={count === 0} onChange={() => toggleFaixa(faixa.id)} style={{ width: '16px', height: '16px', cursor: count === 0 ? 'not-allowed' : 'pointer', accentColor: '#000' }} />
+                        <span style={{ fontSize: '13px', color: '#000' }}>{faixa.label}</span>
+                      </div>
+                      <span style={{ fontSize: '12px', color: '#999', fontWeight: '500' }}>({count})</span>
+                    </label>
+                  );
+                })}
               </div>)}
             </div>
             <select value={filters.categoria} onChange={e => setFilters({ ...filters, categoria: e.target.value })} style={{ padding: '10px 12px', background: '#f9f9f9', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#000', cursor: 'pointer' }}>
@@ -466,7 +511,7 @@ export default function CenariosPlatform() {
             <select value={filters.gender} onChange={e => setFilters({ ...filters, gender: e.target.value })} style={{ padding: '10px 12px', background: '#f9f9f9', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#000', cursor: 'pointer' }}>
               <option value="all">Sexo</option><option value="menina">Menina</option><option value="menino">Menino</option>
             </select>
-            <button onClick={() => setFilters({ ageMin: 0, ageMax: 60, categoria: 'all', gender: 'all', search: '' })} style={{ padding: '10px 12px', background: 'white', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#666', cursor: 'pointer' }}>✕ Limpar</button>
+            <button onClick={() => setFilters({ ageRanges: [], categoria: 'all', gender: 'all', search: '' })} style={{ padding: '10px 12px', background: 'white', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#666', cursor: 'pointer' }}>✕ Limpar</button>
           </div>
         </div>
       </div>
