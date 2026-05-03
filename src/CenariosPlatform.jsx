@@ -52,15 +52,23 @@ function LoadingScreen({ message = 'Carregando cenários...' }) {
 function GaleriaFotos({ imagens, titulo }) {
   const [imagemAtiva, setImagemAtiva] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [isHorizontal, setIsHorizontal] = useState(false);
   const fotos = imagens && imagens.length > 0 ? imagens : ['https://via.placeholder.com/800x600/f0f0f0/666?text=Sem+Imagem'];
   const proxima = () => setImagemAtiva((p) => (p + 1) % fotos.length);
   const anterior = () => setImagemAtiva((p) => (p - 1 + fotos.length) % fotos.length);
   useEffect(() => { setImagemAtiva(0); }, [imagens]);
 
+  // Detecta se a imagem ativa é horizontal ou vertical
+  // Horizontal → preenche o box (cover). Vertical → mostra inteira com bordas pretas (contain).
+  const handleImageLoad = (e) => {
+    const { naturalWidth, naturalHeight } = e.target;
+    setIsHorizontal(naturalWidth >= naturalHeight);
+  };
+
   return (<>
     <div style={{ width: '100%' }}>
       <div className="sa-gallery-main">
-        <img src={fotos[imagemAtiva]} alt={`${titulo} ${imagemAtiva + 1}`} onClick={() => setLightboxOpen(true)} className="sa-gallery-img" />
+        <img src={fotos[imagemAtiva]} alt={`${titulo} ${imagemAtiva + 1}`} onClick={() => setLightboxOpen(true)} onLoad={handleImageLoad} className="sa-gallery-img" style={{ objectFit: isHorizontal ? 'cover' : 'contain' }} />
         {fotos.length > 1 && (<>
           <button onClick={(e) => { e.stopPropagation(); anterior(); }} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.9)', border: 'none', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}><ChevronLeft size={18} /></button>
           <button onClick={(e) => { e.stopPropagation(); proxima(); }} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.9)', border: 'none', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}><ChevronRight size={18} /></button>
