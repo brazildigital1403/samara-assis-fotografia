@@ -514,7 +514,7 @@ export default function CenariosPlatform() {
       </div></>);
   }
 
-  if (isAuthenticated) {
+  if (isAuthenticated && currentHash === '#admin') {
     return (<><style>{GLOBAL_CSS}</style>
       <div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', padding: '1rem', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
