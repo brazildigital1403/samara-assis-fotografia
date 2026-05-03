@@ -239,6 +239,11 @@ export default function CenariosPlatform() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  // Scroll para o topo ao trocar de tela (abrir cenário, voltar pro catálogo, abrir admin)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [selectedScenario, currentHash, isAuthenticated]);
+
   useEffect(() => {
     const loadLogo = async () => {
       try { const r = await fetch('/logo_samarafotografia.jpg'); if (r.ok) setLogoUrl('/logo_samarafotografia.jpg'); }
