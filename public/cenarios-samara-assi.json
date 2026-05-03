@@ -1,0 +1,380 @@
+{
+  "estudio": {
+    "nome": "Samara Assi Fotografia",
+    "descricao": "18 anos eternizando momentos - Acompanhamento de bebês, Newborn, Gestantes e muito mais",
+    "contato": {
+      "whatsapp": "11 98489-2491",
+      "telefone": "11 2036-2324",
+      "email": "fotografia@samaraassi.com"
+    }
+  },
+  "cenarios": [
+    {
+      "id": 1,
+      "titulo": "Newborn - Primeiras Semanas",
+      "categoria": "newborn",
+      "temas": ["clean", "natural"],
+      "ageMonthMin": 0,
+      "ageMonthMax": 1,
+      "genero": "all",
+      "tipo": ["individual"],
+      "descricaoBreve": "Cenário minimalista especial para recém-nascidos com foco em conforto",
+      "descricaoDetalhada": "Ambiente controlado e aconchegante para os primeiros momentos do bebê. Com iluminação natural suave, tons neutros (brancos, bege, cinza) e texturas macias como cobertores e almofadinhas. Cenário pensado especialmente para a segurança e conforto do recém-nascido, permitindo capturar expressões naturais e detalhes como as pequeninas mãos e pés.",
+      "imagemUrl": "https://images.unsplash.com/photo-1555069519-27cea69b0b78?w=400&h=300&fit=crop",
+      "destaques": true
+    },
+    {
+      "id": 2,
+      "titulo": "Newborn - 7 Dias",
+      "categoria": "newborn",
+      "temas": ["natural"],
+      "ageMonthMin": 0,
+      "ageMonthMax": 1,
+      "genero": "menina",
+      "tipo": ["individual"],
+      "descricaoBreve": "Ensaio especial para bebê recém-nascido com flores e elementos delicados",
+      "descricaoDetalhada": "Sessão fotográfica com bebê com até 7 dias de nascimento. Inclui poses em cocoon (embrulhado em tecidos), poses em adornos florais e com acessórios delicados. Ambiente aquecido e tranquilo para garantir o bem-estar e sono do bebê.",
+      "imagemUrl": "https://images.unsplash.com/photo-1523438097911-512bf86e4908?w=400&h=300&fit=crop",
+      "destaques": true
+    },
+    {
+      "id": 3,
+      "titulo": "Newborn Masculino - Estúdio",
+      "categoria": "newborn",
+      "temas": ["clean"],
+      "ageMonthMin": 0,
+      "ageMonthMax": 1,
+      "genero": "menino",
+      "tipo": ["individual"],
+      "descricaoBreve": "Cenário limpo e minimalista para newborn meninos",
+      "descricaoDetalhada": "Espaço com elementos mais neutros e estruturados. Tons de cinza, branco e marrom. Possibilidade de adicionar adornos em azul, verde ou tons terrosos. Segurança e conforto em primeiro lugar.",
+      "imagemUrl": "https://images.unsplash.com/photo-1516627145497-ae6ab60908c9?w=400&h=300&fit=crop",
+      "destaques": false
+    },
+    {
+      "id": 4,
+      "titulo": "Acompanhamento - 1 Mês",
+      "categoria": "acompanhamento",
+      "temas": ["natural"],
+      "ageMonthMin": 0,
+      "ageMonthMax": 2,
+      "genero": "all",
+      "tipo": ["individual"],
+      "descricaoBreve": "Primeiro mês: capturando o desenvolvimento inicial do bebê",
+      "descricaoDetalhada": "Primeira sessão do acompanhamento mensal. Bebê com aproximadamente 30 dias. O foco é capturar como o bebê mudou desde o nascimento - expressões mais alertas, maior controle de pescoço e as primeiras tentativas de sorrir. Ambiente aconchegante com iluminação natural.",
+      "imagemUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+      "destaques": false
+    },
+    {
+      "id": 5,
+      "titulo": "Acompanhamento - 3 Meses",
+      "categoria": "acompanhamento",
+      "temas": ["tema", "natural"],
+      "ageMonthMin": 2,
+      "ageMonthMax": 4,
+      "genero": "all",
+      "tipo": ["individual"],
+      "descricaoBreve": "Aos 3 meses: primeiros sorrisos genuínos e maior interação",
+      "descricaoDetalhada": "Nesta idade, o bebê já consegue seguir rostos com o olhar, começa a sorrir genuinamente e há mais interação. Cenários podem incluir elementos coloridos para estimular a atenção visual. Fotos com pais também são comuns nesta idade.",
+      "imagemUrl": "https://images.unsplash.com/photo-1503454537688-e9c6afada334?w=400&h=300&fit=crop",
+      "destaques": false
+    },
+    {
+      "id": 6,
+      "titulo": "Acompanhamento - 6 Meses",
+      "categoria": "acompanhamento",
+      "temas": ["tema", "natural"],
+      "ageMonthMin": 5,
+      "ageMonthMax": 7,
+      "genero": "all",
+      "tipo": ["individual"],
+      "descricaoBreve": "Meio do ano: bebê sentando com suporte, mais expressivo",
+      "descricaoDetalhada": "Aos 6 meses o bebê consegue ficar sentado com suporte e mostra muito mais personalidade. Cenários podem ser mais elaborados. Excelente fase para capturar risadas e interações. O desenvolvimento é bem visível comparado aos primeiros meses.",
+      "imagemUrl": "https://images.unsplash.com/photo-1503235930437-8c6cea9583a0?w=400&h=300&fit=crop",
+      "destaques": true
+    },
+    {
+      "id": 7,
+      "titulo": "Acompanhamento - 9 Meses",
+      "categoria": "acompanhamento",
+      "temas": ["tema"],
+      "ageMonthMin": 8,
+      "ageMonthMax": 10,
+      "genero": "all",
+      "tipo": ["individual"],
+      "descricaoBreve": "Aos 9 meses: engatinhando e explorando o mundo",
+      "descricaoDetalhada": "Bebê muito mais ativo, começando a engatinhar e explorar. Pode haver mais movimento nas fotos. Cenários podem incluir elementos seguros para o bebê explorar, criando fotos mais dinâmicas e divertidas.",
+      "imagemUrl": "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=300&fit=crop",
+      "destaques": false
+    },
+    {
+      "id": 8,
+      "titulo": "Acompanhamento - 12 Meses (1 Ano)",
+      "categoria": "acompanhamento",
+      "temas": ["tema", "natural"],
+      "ageMonthMin": 10,
+      "ageMonthMax": 14,
+      "genero": "all",
+      "tipo": ["individual", "familia"],
+      "descricaoBreve": "Aniversário de 1 ano: grande transformação do bebê",
+      "descricaoDetalhada": "Marca o final do primeiro ano de vida. Bebê muito mais independente, talvez já caminhando ou prestes a caminhar. Muitas vezes essa sessão é especial, podendo incluir bolo, decoração temática e familiares.",
+      "imagemUrl": "https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=400&h=300&fit=crop",
+      "destaques": true
+    },
+    {
+      "id": 9,
+      "titulo": "Tema Floresta Mágica",
+      "categoria": "temático",
+      "temas": ["tema", "natural"],
+      "ageMonthMin": 6,
+      "ageMonthMax": 36,
+      "genero": "menina",
+      "tipo": ["individual", "familia"],
+      "descricaoBreve": "Natureza encantada com flores, plantas e elementos florais",
+      "descricaoDetalhada": "Cenário que remete a uma floresta mágica com plantas verdes, flores naturais e tecidos fluidos. Cores predominantes: verde, branco e tons quentes. Perfeito para fotos etéreas e naturais. Ideal para meninas em qualquer idade, criando uma atmosfera de conto de fadas.",
+      "imagemUrl": "https://images.unsplash.com/photo-1530268729831-4be0452b33ee?w=400&h=300&fit=crop",
+      "destaques": true
+    },
+    {
+      "id": 10,
+      "titulo": "Tema Astronauta - Espaço",
+      "categoria": "temático",
+      "temas": ["tema"],
+      "ageMonthMin": 6,
+      "ageMonthMax": 48,
+      "genero": "menino",
+      "tipo": ["individual", "familia"],
+      "descricaoBreve": "Exploração espacial com naves, planetas e elementos futuristas",
+      "descricaoDetalhada": "Ambiente temático com elementos de ficção científica. Cores predominantes: azul marinho, prata, dourado. Inclui props como capacetes de astronauta, foguetes e painéis de controle. Cenário vibrante e lúdico para crianças que amam espaço.",
+      "imagemUrl": "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=300&fit=crop",
+      "destaques": true
+    },
+    {
+      "id": 11,
+      "titulo": "Tema Piquenique Campestre",
+      "categoria": "temático",
+      "temas": ["tema", "natural"],
+      "ageMonthMin": 4,
+      "ageMonthMax": 36,
+      "genero": "all",
+      "tipo": ["individual", "familia"],
+      "descricaoBreve": "Cenário rural com toalha de piquenique, frutas e elementos de picnic",
+      "descricaoDetalhada": "Ambiente ao ar livre ou estúdio com tema de piquenique. Inclui toalha quadriculada, frutas frescas, cesta de vime, plantas. Cores quentes: branco, vermelho, verde. Atmosfera aconchegante e rústica, perfeita para famílias.",
+      "imagemUrl": "https://images.unsplash.com/photo-1499209974431-9a029af47614?w=400&h=300&fit=crop",
+      "destaques": false
+    },
+    {
+      "id": 12,
+      "titulo": "Tema Festa Tropical",
+      "categoria": "temático",
+      "temas": ["tema"],
+      "ageMonthMin": 6,
+      "ageMonthMax": 36,
+      "genero": "all",
+      "tipo": ["individual", "familia"],
+      "descricaoBreve": "Cores vibrantes, flores tropicais, banana leaves e elementos alegres",
+      "descricaoDetalhada": "Cenário colorido e alegre com folhas de bananeira, flores tropicais em cores vibrantes (rosa, laranja, amarelo, verde). Ambiente divertido e descontraído. Ótimo para idades a partir de 6 meses, criando fotos animadas e cheias de energia.",
+      "imagemUrl": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop",
+      "destaques": true
+    },
+    {
+      "id": 13,
+      "titulo": "Tema Mundo Ártico",
+      "categoria": "temático",
+      "temas": ["tema"],
+      "ageMonthMin": 6,
+      "ageMonthMax": 48,
+      "genero": "menina",
+      "tipo": ["individual", "familia"],
+      "descricaoBreve": "Inverno congelado com nevinha artificial, tons azuis e prateados",
+      "descricaoDetalhada": "Cenário invernal elegante com tons azuis, brancos e prateados. Inclui nevinha artificial, flocos, elementos de gelo. Atmosfera mágica e sofisticada. Ideal para meninas, remetendo a contos de fadas como Frozen.",
+      "imagemUrl": "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=300&fit=crop",
+      "destaques": false
+    },
+    {
+      "id": 14,
+      "titulo": "Tema Circo",
+      "categoria": "temático",
+      "temas": ["tema"],
+      "ageMonthMin": 12,
+      "ageMonthMax": 48,
+      "genero": "all",
+      "tipo": ["individual", "familia"],
+      "descricaoBreve": "Alegria e diversão com cores primárias, balões e elementos circenses",
+      "descricaoDetalhada": "Ambiente festivo com listras, balões coloridos, banners, elementos de circo. Cores: vermelho, azul, amarelo, branco. Perfeito para aniversários e crianças maiores que conseguem interagir mais com a câmera.",
+      "imagemUrl": "https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=300&fit=crop",
+      "destaques": false
+    },
+    {
+      "id": 15,
+      "titulo": "Clean Minimalista Branco",
+      "categoria": "clean",
+      "temas": ["clean"],
+      "ageMonthMin": 0,
+      "ageMonthMax": 60,
+      "genero": "all",
+      "tipo": ["individual", "familia", "gemeos"],
+      "descricaoBreve": "Fundo branco puro para fotos neutras e elegantes",
+      "descricaoDetalhada": "Cenário totalmente minimalista com fundo branco, sem distrações. O foco é 100% na criança ou família. Iluminação profissional que realça o rosto. Ideal para portfólio, redes sociais e qualquer estilo de fotografia.",
+      "imagemUrl": "https://images.unsplash.com/photo-1513154754953-1bb8f8ceef08?w=400&h=300&fit=crop",
+      "destaques": true
+    },
+    {
+      "id": 16,
+      "titulo": "Clean Cinza Claro",
+      "categoria": "clean",
+      "temas": ["clean"],
+      "ageMonthMin": 0,
+      "ageMonthMax": 60,
+      "genero": "all",
+      "tipo": ["individual", "familia", "gemeos"],
+      "descricaoBreve": "Fundo cinza suave para contraste delicado",
+      "descricaoDetalhada": "Ambiente minimalista com fundo em tom cinza claro (não muito escuro). Oferece um pouco mais de contraste que o branco, mantendo a elegância. Perfeito para fotografia moderna e sofisticada.",
+      "imagemUrl": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop",
+      "destaques": false
+    },
+    {
+      "id": 17,
+      "titulo": "Clean com Textura",
+      "categoria": "clean",
+      "temas": ["clean", "natural"],
+      "ageMonthMin": 0,
+      "ageMonthMax": 60,
+      "genero": "all",
+      "tipo": ["individual", "familia", "gemeos"],
+      "descricaoBreve": "Fundo neutro com pequena textura sutil",
+      "descricaoDetalhada": "Cenário clean com leve textura (madeira clara, linho, papel estruturado). Mantém a simplicidade mas adiciona interesse visual. Cores neutras: bege, branco, cinza claro.",
+      "imagemUrl": "https://images.unsplash.com/photo-1522529163902-abf92ad63995?w=400&h=300&fit=crop",
+      "destaques": false
+    },
+    {
+      "id": 18,
+      "titulo": "Gêmeos Especial",
+      "categoria": "gemeos",
+      "temas": ["natural", "clean"],
+      "ageMonthMin": 0,
+      "ageMonthMax": 36,
+      "genero": "all",
+      "tipo": ["gemeos"],
+      "descricaoBreve": "Cenário pensado especialmente para capturar a conexão entre gêmeos",
+      "descricaoDetalhada": "Ambiente minimalista com focos para acentuar a interação entre os gêmeos. Props podem ser duplicados. Cores suaves que realcem a ligação especial. Excelente para mostrar a conexão e a semelhança (ou diferenças) entre irmãos gêmeos.",
+      "imagemUrl": "https://images.unsplash.com/photo-1503252947848-6b6bbadb78df?w=400&h=300&fit=crop",
+      "destaques": false
+    },
+    {
+      "id": 19,
+      "titulo": "Smash The Cake - 1° Aninho",
+      "categoria": "smash",
+      "temas": ["tema"],
+      "ageMonthMin": 10,
+      "ageMonthMax": 14,
+      "genero": "all",
+      "tipo": ["individual", "familia"],
+      "descricaoBreve": "Celebração do primeiro aniversário com bolo para o bebê explorar",
+      "descricaoDetalhada": "Sessão especial para marcar 1 ano de vida. Bebê em frente a um bolo gostoso que pode sujar, explorar com as mãos. Atmosfera lúdica e descontraída. Excelente para capturar reações autênticas e momentos engraçados. Decoração temática pode variar.",
+      "imagemUrl": "https://images.unsplash.com/photo-1558363198-88a8e106c3ed?w=400&h=300&fit=crop",
+      "destaques": true
+    },
+    {
+      "id": 20,
+      "titulo": "Gestante - Barriguinha",
+      "categoria": "gestante",
+      "temas": ["natural"],
+      "ageMonthMin": -9,
+      "ageMonthMax": -1,
+      "genero": "all",
+      "tipo": ["individual", "familia"],
+      "descricaoBreve": "Celebração da gravidez, focando a beleza da gestante",
+      "descricaoDetalhada": "Ensaio sensível e elegante durante a gestação. Pode incluir apenas a mãe, com acompanhante ou com família. Realça a beleza e a transformação da gestante. Atmosfera amorosa e acolhedora. Perfeito como recordação antes da chegada do bebê.",
+      "imagemUrl": "https://images.unsplash.com/photo-1594008166651-ba5db8917f1d?w=400&h=300&fit=crop",
+      "destaques": false
+    }
+  ],
+  "pacotes": [
+    {
+      "id": 1,
+      "nome": "Newborn Essencial",
+      "descricao": "Sessão de recém-nascido com 30-40 minutos",
+      "fotos": "20-30 fotos editadas",
+      "valor": "A consultar",
+      "categorias": ["newborn"]
+    },
+    {
+      "id": 2,
+      "nome": "Acompanhamento Mensal",
+      "descricao": "Uma sessão por mês durante 12 meses",
+      "fotos": "Ilimitadas por sessão",
+      "valor": "A consultar",
+      "categorias": ["acompanhamento"]
+    },
+    {
+      "id": 3,
+      "nome": "Smash The Cake",
+      "descricao": "Sessão especial para aniversário de 1 ano",
+      "fotos": "40-50 fotos editadas",
+      "valor": "A consultar",
+      "categorias": ["smash"]
+    },
+    {
+      "id": 4,
+      "nome": "Ensaio Temático",
+      "descricao": "Sessão com cenário temático à escolha",
+      "fotos": "30-40 fotos editadas",
+      "valor": "A consultar",
+      "categorias": ["temático"]
+    },
+    {
+      "id": 5,
+      "nome": "Ensaio Gestante",
+      "descricao": "Celebração da gestação",
+      "fotos": "30-40 fotos editadas",
+      "valor": "A consultar",
+      "categorias": ["gestante"]
+    },
+    {
+      "id": 6,
+      "nome": "Ensaio Família",
+      "descricao": "Sessão com toda a família",
+      "fotos": "40-50 fotos editadas",
+      "valor": "A consultar",
+      "categorias": ["acompanhamento", "smash"]
+    }
+  ],
+  "temas": [
+    {
+      "id": "newborn",
+      "nome": "Newborn",
+      "descricao": "Primeiros dias de vida do bebê"
+    },
+    {
+      "id": "acompanhamento",
+      "nome": "Acompanhamento Mensal",
+      "descricao": "Desenvolvimento do bebê mês a mês"
+    },
+    {
+      "id": "temático",
+      "nome": "Temático",
+      "descricao": "Cenários com temas específicos"
+    },
+    {
+      "id": "clean",
+      "nome": "Clean Minimalista",
+      "descricao": "Cenários simples e elegantes"
+    },
+    {
+      "id": "gemeos",
+      "nome": "Gêmeos",
+      "descricao": "Especializado para irmãos gêmeos"
+    },
+    {
+      "id": "smash",
+      "nome": "Smash The Cake",
+      "descricao": "Primeiro aniversário"
+    },
+    {
+      "id": "gestante",
+      "nome": "Gestante",
+      "descricao": "Gravidezes memoráveis"
+    }
+  ]
+}
