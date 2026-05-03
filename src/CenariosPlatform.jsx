@@ -120,6 +120,11 @@ function GaleriaFotos({ imagens, titulo }) {
 }
 
 function ModalEdicao({ scenario, onSave, onClose, isSaving }) {
+  // Separa capa das URLs adicionais ao abrir o modal
+  const todasImagens = scenario.imagens || [scenario.imagemUrl];
+  const capaInicial = scenario.imagemUrl || todasImagens[0] || '';
+  const adicionaisIniciais = todasImagens.filter(u => u && u !== capaInicial);
+
   const [editData, setEditData] = useState({
     titulo: scenario.titulo || '',
     categoria: scenario.categoria || 'temático',
@@ -128,16 +133,21 @@ function ModalEdicao({ scenario, onSave, onClose, isSaving }) {
     genero: scenario.genero || 'all',
     descricaoBreve: scenario.descricaoBreve || '',
     descricaoDetalhada: scenario.descricaoDetalhada || '',
-    imagens: scenario.imagens || [scenario.imagemUrl],
+    imagemUrl: capaInicial,
+    imagens: adicionaisIniciais,
     destaques: scenario.destaques || false
   });
   const handleSave = () => {
     if (!editData.titulo.trim()) { alert('Título obrigatório!'); return; }
-    if (editData.imagens.length === 0 || !editData.imagens[0]) { alert('Adicione ao menos uma imagem!'); return; }
-    onSave({ ...scenario, ...editData, imagemUrl: editData.imagens[0], imagens: editData.imagens });
+    if (!editData.imagemUrl.trim()) { alert('Adicione a URL da capa!'); return; }
+    // Reconstrói galeria com capa primeiro + adicionais (sem duplicar capa)
+    const galeria = [editData.imagemUrl, ...editData.imagens.filter(u => u && u !== editData.imagemUrl)];
+    onSave({ ...scenario, ...editData, imagemUrl: editData.imagemUrl, imagens: galeria });
   };
   const inputStyle = { width: '100%', padding: '10px 12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', fontFamily: 'inherit' };
-  const labelStyle = { display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' };
+  const inputCenter = { ...inputStyle, textAlign: 'center' };
+  const inputCenterSelect = { ...inputCenter, textAlignLast: 'center' };
+  const labelStyle = { display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' };
 
   return (<div className="sa-modal-overlay" onClick={isSaving ? undefined : onClose}>
     <div className="sa-modal" onClick={(e) => e.stopPropagation()}>
@@ -146,31 +156,37 @@ function ModalEdicao({ scenario, onSave, onClose, isSaving }) {
         <button onClick={onClose} disabled={isSaving} style={{ background: '#f5f5f5', border: 'none', width: '36px', height: '36px', borderRadius: '50%', cursor: isSaving ? 'not-allowed' : 'pointer', opacity: isSaving ? 0.5 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={18} /></button>
       </div>
       <div style={{ padding: '1.5rem' }}>
-        <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
-          <img src={editData.imagens[0] || 'https://via.placeholder.com/200x150/f0f0f0/666?text=Sem+Imagem'} alt="Preview" style={{ width: '100%', maxWidth: '300px', height: '180px', objectFit: 'contain', background: '#1a1a1a', borderRadius: '12px' }} />
-        </div>
         <div style={{ marginBottom: '1rem' }}>
           <label style={labelStyle}>Título *</label>
-          <input type="text" value={editData.titulo} onChange={e => setEditData({ ...editData, titulo: e.target.value })} placeholder="Ex: Newborn - 7 Dias" style={inputStyle} />
+          <input type="text" value={editData.titulo} onChange={e => setEditData({ ...editData, titulo: e.target.value })} placeholder="Ex: Newborn - 7 Dias" style={inputCenter} />
         </div>
         <div style={{ marginBottom: '1rem' }}>
-          <label style={labelStyle}>URLs das Imagens (uma por linha)</label>
-          <textarea value={editData.imagens.join('\n')} onChange={e => { const urls = e.target.value.split('\n').filter(u => u.trim()); setEditData({ ...editData, imagens: urls }); }} rows="4" placeholder="https://...foto1.jpg" style={{ ...inputStyle, fontFamily: 'monospace', fontSize: '12px', resize: 'vertical' }} />
-          <p style={{ fontSize: '11px', color: '#666', margin: '6px 0 0' }}>📷 {editData.imagens.length} foto(s) | A primeira é a capa</p>
+          <label style={labelStyle}>📸 URL da Capa *</label>
+          <input type="text" value={editData.imagemUrl} onChange={e => setEditData({ ...editData, imagemUrl: e.target.value })} placeholder="https://...capa.jpg" style={{ ...inputStyle, fontFamily: 'monospace', fontSize: '12px' }} />
+          {editData.imagemUrl && (
+            <div style={{ marginTop: '10px', textAlign: 'center' }}>
+              <img src={editData.imagemUrl} alt="Preview da capa" style={{ width: '100%', maxWidth: '240px', height: '140px', objectFit: 'cover', borderRadius: '8px', border: '2px solid #f0f0f0' }} />
+            </div>
+          )}
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <label style={labelStyle}>🖼️ URLs da Galeria (uma por linha)</label>
+          <textarea value={editData.imagens.join('\n')} onChange={e => { const urls = e.target.value.split('\n').filter(u => u.trim()); setEditData({ ...editData, imagens: urls }); }} rows="4" placeholder="https://...foto1.jpg&#10;https://...foto2.jpg" style={{ ...inputStyle, fontFamily: 'monospace', fontSize: '12px', resize: 'vertical' }} />
+          <p style={{ fontSize: '11px', color: '#666', margin: '6px 0 0', textAlign: 'center' }}>{editData.imagens.length} foto(s) adicionais na galeria</p>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
           <div><label style={labelStyle}>Categoria</label>
-            <select value={editData.categoria} onChange={e => setEditData({ ...editData, categoria: e.target.value })} style={inputStyle}>
+            <select value={editData.categoria} onChange={e => setEditData({ ...editData, categoria: e.target.value })} style={inputCenterSelect}>
               <option value="newborn">Newborn</option><option value="acompanhamento">Acompanhamento</option><option value="temático">Temático</option><option value="clean">Clean</option><option value="gemeos">Gêmeos</option><option value="smash">Smash The Cake</option><option value="gestante">Gestante</option>
             </select></div>
           <div><label style={labelStyle}>Sexo</label>
-            <select value={editData.genero} onChange={e => setEditData({ ...editData, genero: e.target.value })} style={inputStyle}>
+            <select value={editData.genero} onChange={e => setEditData({ ...editData, genero: e.target.value })} style={inputCenterSelect}>
               <option value="all">Menina - Menino</option><option value="menina">Menina</option><option value="menino">Menino</option>
             </select></div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-          <div><label style={labelStyle}>Idade Mín (meses)</label><input type="number" value={editData.ageMonthMin} onChange={e => setEditData({ ...editData, ageMonthMin: parseInt(e.target.value) || 0 })} style={inputStyle} /></div>
-          <div><label style={labelStyle}>Idade Máx (meses)</label><input type="number" value={editData.ageMonthMax} onChange={e => setEditData({ ...editData, ageMonthMax: parseInt(e.target.value) || 0 })} style={inputStyle} /></div>
+          <div><label style={labelStyle}>Idade Mín (meses)</label><input type="number" value={editData.ageMonthMin} onChange={e => setEditData({ ...editData, ageMonthMin: parseInt(e.target.value) || 0 })} style={inputCenter} /></div>
+          <div><label style={labelStyle}>Idade Máx (meses)</label><input type="number" value={editData.ageMonthMax} onChange={e => setEditData({ ...editData, ageMonthMax: parseInt(e.target.value) || 0 })} style={inputCenter} /></div>
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', padding: '12px', background: '#f5f5f5', borderRadius: '8px' }}>
@@ -277,11 +293,12 @@ export default function CenariosPlatform() {
 
   const handleAddScenario = async () => {
     if (!newScenario.titulo.trim()) { alert('Adicione um título!'); return; }
-    const imgs = newScenario.imagens.length > 0 ? newScenario.imagens : (newScenario.imagemUrl ? [newScenario.imagemUrl] : []);
-    if (imgs.length === 0) { alert('Adicione pelo menos uma imagem!'); return; }
+    if (!newScenario.imagemUrl.trim()) { alert('Adicione a URL da capa!'); return; }
     try {
       setSaving(true);
-      const novo = { ...newScenario, imagemUrl: imgs[0], imagens: imgs, destaques: false };
+      // Galeria sempre inclui a capa como primeira foto + as URLs adicionais (sem duplicar a capa)
+      const galeria = [newScenario.imagemUrl, ...newScenario.imagens.filter(u => u && u !== newScenario.imagemUrl)];
+      const novo = { ...newScenario, imagens: galeria, destaques: false };
       const adicionado = await adicionarCenario(novo);
       setScenarios([...scenarios, adicionado].sort((a, b) => a.titulo.localeCompare(b.titulo)));
       setNewScenario({ titulo: '', categoria: 'temático', ageMonthMin: 0, ageMonthMax: 12, genero: 'all', descricaoBreve: '', descricaoDetalhada: '', imagemUrl: '', imagens: [] });
@@ -430,48 +447,79 @@ export default function CenariosPlatform() {
       <div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', padding: '1rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-            <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <h1 style={{ fontSize: '28px', fontWeight: '700', margin: 0, color: '#000' }}>Admin</h1>
-              <p style={{ fontSize: '12px', color: '#666', margin: '0.5rem 0 0' }}>by BrazilDigital.ag</p>
+              <a href="http://brazildigital.ag" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', lineHeight: 0, opacity: 0.7, transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = '1'} onMouseLeave={e => e.currentTarget.style.opacity = '0.7'} aria-label="BrazilDigital.ag">
+                <img src="https://brazildigital.ag/wp-content/uploads/2025/04/cropped-versao_Principal-80x80.png" alt="BrazilDigital" width="32" height="32" style={{ display: 'block' }} />
+              </a>
             </div>
             <button onClick={() => { setIsAuthenticated(false); window.location.hash = ''; setCurrentHash(''); }} style={{ padding: '10px 20px', background: '#000', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '600' }}>Sair</button>
           </div>
           {savedNotification && (<div style={{ background: '#e8f5e9', border: '1px solid #4caf50', color: '#2e7d32', padding: '10px 14px', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '13px', fontWeight: '600' }}>{savedNotification}</div>)}
           <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', marginBottom: '2rem', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '700', margin: '0 0 1.5rem', color: '#000' }}>➕ Novo Cenário</h2>
-            <input type="text" value={newScenario.titulo} onChange={e => setNewScenario({ ...newScenario, titulo: e.target.value })} placeholder="Título" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', marginBottom: '1rem' }} />
+            <h2 style={{ fontSize: '20px', fontWeight: '700', margin: '0 0 1.5rem', color: '#000', textAlign: 'center' }}>➕ Novo Cenário</h2>
+
+            {/* TÍTULO */}
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', marginBottom: '6px', color: '#000', textTransform: 'uppercase' }}>URLs das Imagens (uma por linha) - 3 a 5 fotos recomendadas</label>
-              <textarea value={newScenario.imagens.join('\n')} onChange={e => { const urls = e.target.value.split('\n').filter(u => u.trim()); setNewScenario({ ...newScenario, imagens: urls, imagemUrl: urls[0] || '' }); }} placeholder="https://...foto1.jpg" rows="4" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '13px', fontFamily: 'monospace', background: '#f5f5f5', boxSizing: 'border-box', resize: 'vertical' }} />
-              <p style={{ fontSize: '11px', color: '#666', margin: '6px 0 0' }}>✨ A primeira imagem será usada como capa</p>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Título</label>
+              <input type="text" value={newScenario.titulo} onChange={e => setNewScenario({ ...newScenario, titulo: e.target.value })} placeholder="Ex: Newborn - 7 Dias" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', textAlign: 'center' }} />
             </div>
+
+            {/* URL DA CAPA */}
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>📸 URL da Capa</label>
+              <input type="text" value={newScenario.imagemUrl} onChange={e => setNewScenario({ ...newScenario, imagemUrl: e.target.value })} placeholder="https://...capa.jpg" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '13px', fontFamily: 'monospace', background: '#f5f5f5', boxSizing: 'border-box' }} />
+              {newScenario.imagemUrl && (
+                <div style={{ marginTop: '10px', textAlign: 'center' }}>
+                  <img src={newScenario.imagemUrl} alt="Preview da capa" style={{ width: '100%', maxWidth: '240px', height: '140px', objectFit: 'cover', borderRadius: '8px', border: '2px solid #f0f0f0' }} />
+                </div>
+              )}
+            </div>
+
+            {/* URLs ADICIONAIS DA GALERIA */}
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>🖼️ URLs da Galeria (uma por linha)</label>
+              <textarea value={newScenario.imagens.join('\n')} onChange={e => { const urls = e.target.value.split('\n').filter(u => u.trim()); setNewScenario({ ...newScenario, imagens: urls }); }} placeholder="https://...foto1.jpg&#10;https://...foto2.jpg&#10;https://...foto3.jpg" rows="4" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '13px', fontFamily: 'monospace', background: '#f5f5f5', boxSizing: 'border-box', resize: 'vertical' }} />
+              <p style={{ fontSize: '11px', color: '#666', margin: '6px 0 0', textAlign: 'center' }}>{newScenario.imagens.length} foto(s) na galeria - 3 a 5 fotos recomendadas</p>
+            </div>
+
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
               <div style={{ flex: 1, minWidth: '120px' }}>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', marginBottom: '4px', color: '#666' }}>Categoria</label>
-                <select value={newScenario.categoria} onChange={e => setNewScenario({ ...newScenario, categoria: e.target.value })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box' }}>
+                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Categoria</label>
+                <select value={newScenario.categoria} onChange={e => setNewScenario({ ...newScenario, categoria: e.target.value })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', textAlign: 'center', textAlignLast: 'center' }}>
                   <option value="newborn">Newborn</option><option value="acompanhamento">Acompanhamento</option><option value="temático">Temático</option><option value="clean">Clean</option><option value="gemeos">Gêmeos</option><option value="smash">Smash The Cake</option><option value="gestante">Gestante</option>
                 </select>
               </div>
               <div style={{ flex: 1, minWidth: '120px' }}>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', marginBottom: '4px', color: '#666' }}>Sexo</label>
-                <select value={newScenario.genero} onChange={e => setNewScenario({ ...newScenario, genero: e.target.value })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box' }}>
+                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Sexo</label>
+                <select value={newScenario.genero} onChange={e => setNewScenario({ ...newScenario, genero: e.target.value })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', textAlign: 'center', textAlignLast: 'center' }}>
                   <option value="all">Menina - Menino</option><option value="menina">Menina</option><option value="menino">Menino</option>
                 </select>
               </div>
             </div>
+
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
               <div style={{ flex: 1, minWidth: '120px' }}>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', marginBottom: '4px', color: '#666' }}>Idade Mín</label>
-                <input type="number" min="0" value={newScenario.ageMonthMin} onChange={e => setNewScenario({ ...newScenario, ageMonthMin: parseInt(e.target.value) || 0 })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box' }} />
+                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Idade Mín (meses)</label>
+                <input type="number" min="0" value={newScenario.ageMonthMin} onChange={e => setNewScenario({ ...newScenario, ageMonthMin: parseInt(e.target.value) || 0 })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', textAlign: 'center' }} />
               </div>
               <div style={{ flex: 1, minWidth: '120px' }}>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', marginBottom: '4px', color: '#666' }}>Idade Máx</label>
-                <input type="number" min="0" value={newScenario.ageMonthMax} onChange={e => setNewScenario({ ...newScenario, ageMonthMax: parseInt(e.target.value) || 12 })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box' }} />
+                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Idade Máx (meses)</label>
+                <input type="number" min="0" value={newScenario.ageMonthMax} onChange={e => setNewScenario({ ...newScenario, ageMonthMax: parseInt(e.target.value) || 12 })} disabled={saving} style={{ width: '100%', padding: '10px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', textAlign: 'center' }} />
               </div>
             </div>
-            <textarea value={newScenario.descricaoBreve} onChange={e => setNewScenario({ ...newScenario, descricaoBreve: e.target.value })} placeholder="Descrição curta" rows="2" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', marginBottom: '1rem', resize: 'vertical' }} />
-            <textarea value={newScenario.descricaoDetalhada} onChange={e => setNewScenario({ ...newScenario, descricaoDetalhada: e.target.value })} placeholder="Descrição detalhada" rows="3" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', marginBottom: '1rem', resize: 'vertical' }} />
-            <button onClick={handleAddScenario} disabled={saving} style={{ width: '100%', padding: '12px', background: '#000', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Descrição Curta</label>
+              <textarea value={newScenario.descricaoBreve} onChange={e => setNewScenario({ ...newScenario, descricaoBreve: e.target.value })} placeholder="Resumo em uma linha" rows="2" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', resize: 'vertical' }} />
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '6px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>Descrição Detalhada</label>
+              <textarea value={newScenario.descricaoDetalhada} onChange={e => setNewScenario({ ...newScenario, descricaoDetalhada: e.target.value })} placeholder="Detalhes do cenário, faixa etária recomendada, observações..." rows="4" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box', resize: 'vertical' }} />
+            </div>
+
+            <button onClick={handleAddScenario} disabled={saving} style={{ width: '100%', padding: '14px', background: '#000', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
               {saving ? (<><Loader2 size={16} className="sa-spin" />Salvando...</>) : (<><PlusIcon /> Adicionar Cenário</>)}
             </button>
           </div>
@@ -501,9 +549,6 @@ export default function CenariosPlatform() {
               ))}
             </div>
           )}
-          <div style={{ textAlign: 'center', paddingTop: '2rem', borderTop: '1px solid #f0f0f0' }}>
-            <button onClick={recarregarCenarios} disabled={saving} style={{ padding: '10px 20px', background: 'white', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: '#000', cursor: 'pointer' }}>🔄 Recarregar do Supabase</button>
-          </div>
         </div>
         {editingScenario && (<ModalEdicao scenario={editingScenario} onSave={handleSaveEdit} onClose={() => !saving && setEditingScenario(null)} isSaving={saving} />)}
       </div></>);
