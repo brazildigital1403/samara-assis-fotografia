@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Search, Eye, EyeOff, Lock, ChevronDown, ChevronLeft, ChevronRight, X, Edit2, Trash2, Loader2 } from 'lucide-react';
 import { 
   carregarCenarios, 
@@ -60,7 +60,7 @@ function cenarioMatchFaixa(scenario, faixa) {
 }
 
 const LogoIcon = ({ src }) => {
-  if (src) return <img src={src} alt="Samara Assi Fotografia" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />;
+  if (src) return <img src={src} alt="Samara Assi" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />;
   return (<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="10" r="4" stroke="currentColor" strokeWidth="2" fill="none"/><path d="M8 24c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" strokeWidth="2" fill="none"/></svg>);
 };
 const CameraIcon = () => (<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/><circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" fill="none"/><circle cx="18" cy="8" r="1.5" fill="currentColor"/></svg>);
@@ -205,6 +205,32 @@ export default function CenariosPlatform() {
   const [filters, setFilters] = useState({ ageRanges: [], categoria: 'all', gender: 'all', search: '' });
   const [newScenario, setNewScenario] = useState({ titulo: '', categoria: 'temático', ageMonthMin: 0, ageMonthMax: 12, genero: 'all', descricaoBreve: '', descricaoDetalhada: '', imagemUrl: '', imagens: [] });
   const [currentHash, setCurrentHash] = useState(typeof window !== 'undefined' ? window.location.hash : '');
+  const filterDropdownRef = useRef(null);
+
+  // Fecha o dropdown de filtros ao clicar fora, apertar Esc ou rolar a página
+  useEffect(() => {
+    if (!expandedFilter) return;
+
+    const handleClickOutside = (event) => {
+      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
+        setExpandedFilter(null);
+      }
+    };
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') setExpandedFilter(null);
+    };
+    const handleScroll = () => setExpandedFilter(null);
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [expandedFilter]);
 
   // Escuta mudança do hash na URL (quando clica em link "Admin" ou usa back/forward do navegador)
   useEffect(() => {
@@ -350,7 +376,7 @@ export default function CenariosPlatform() {
           <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, flex: 1 }}>
               <LogoIcon src={logoUrl} />
-              <h1 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: '#000', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Samara Assi Fotografia</h1>
+              <h1 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: '#000', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Samara Assi</h1>
             </div>
             <button onClick={() => setSelectedScenario(null)} style={{ padding: '8px 16px', background: 'white', border: '1px solid #d5d5d5', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: '#000', whiteSpace: 'nowrap', flexShrink: 0 }}>← Voltar</button>
           </div>
@@ -477,8 +503,8 @@ export default function CenariosPlatform() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, flex: 1 }}>
             <LogoIcon src={logoUrl} />
             <div style={{ minWidth: 0 }}>
-              <h1 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: '#000', whiteSpace: 'nowrap' }}>Samara Assi Fotografia</h1>
-              <p style={{ fontSize: '11px', color: '#666', margin: '0.25rem 0 0' }}>Cenários</p>
+              <h1 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: '#000', whiteSpace: 'nowrap' }}>Samara Assi</h1>
+              <p style={{ fontSize: '11px', color: '#666', margin: '0.25rem 0 0' }}>Cenários de Fotografia</p>
             </div>
           </div>
           <button onClick={() => { window.location.hash = '#admin'; setCurrentHash('#admin'); }} style={{ padding: '8px 16px', background: '#000', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', flexShrink: 0 }}>Admin</button>
@@ -491,7 +517,7 @@ export default function CenariosPlatform() {
       <div style={{ background: 'white', borderBottom: '1px solid #f0f0f0', padding: '0.75rem 1rem' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.5rem' }}>
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} ref={filterDropdownRef}>
               <button onClick={() => setExpandedFilter(expandedFilter === 'age' ? null : 'age')} style={{ width: '100%', padding: '10px 12px', background: filters.ageRanges.length > 0 ? '#000' : '#f9f9f9', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: filters.ageRanges.length > 0 ? 'white' : '#000', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span>{filters.ageRanges.length > 0 ? `Idade (${filters.ageRanges.length})` : 'Idade'}</span>
                 <ChevronDown size={14} style={{ transform: expandedFilter === 'age' ? 'rotate(180deg)' : 'rotate(0deg)' }} />
