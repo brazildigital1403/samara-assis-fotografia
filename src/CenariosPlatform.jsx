@@ -18,6 +18,12 @@ const GLOBAL_CSS = `
   @media (max-width: 900px) { .sa-detail-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; padding: 1.5rem !important; } }
   .sa-detail-title { font-size: 30px; font-weight: 700; margin: 0 0 1.5rem; color: #000; line-height: 1.25; word-break: break-word; overflow-wrap: break-word; hyphens: auto; text-align: left; }
   @media (max-width: 768px) { .sa-detail-title { font-size: 22px !important; } }
+
+  /* Título mobile (aparece antes da galeria, só em telas pequenas) */
+  .sa-detail-title-mobile { display: none; font-size: 22px; font-weight: 700; margin: 0 0 1rem; color: #000; line-height: 1.25; word-break: break-word; overflow-wrap: break-word; text-align: left; padding: 1.5rem 1.5rem 0; }
+  @media (max-width: 900px) { .sa-detail-title-mobile { display: block; } }
+  /* No mobile, esconder o título que está dentro do bloco de info */
+  @media (max-width: 900px) { .sa-detail-title-desktop { display: none; } }
   .sa-gallery-main { position: relative; width: 100%; height: 500px; border-radius: 12px; overflow: hidden; margin-bottom: 12px; background: #1a1a1a; }
   @media (max-width: 768px) { .sa-gallery-main { height: 360px !important; } }
   .sa-gallery-img { width: 100%; height: 100%; object-fit: contain; cursor: pointer; display: block; }
@@ -351,10 +357,11 @@ export default function CenariosPlatform() {
         </header>
         <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '1rem' }}>
           <div style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
+            <h1 className="sa-detail-title-mobile">{selectedScenario.titulo}</h1>
             <div className="sa-detail-grid">
               <div><GaleriaFotos imagens={selectedScenario.imagens || [selectedScenario.imagemUrl]} titulo={selectedScenario.titulo} /></div>
               <div className="sa-text-left">
-                <h1 className="sa-detail-title">{selectedScenario.titulo}</h1>
+                <h1 className="sa-detail-title sa-detail-title-desktop">{selectedScenario.titulo}</h1>
                 <div style={{ display: 'grid', gap: '1.25rem', marginBottom: '2rem' }}>
                   <div className="sa-text-left" style={{ borderBottom: '1px solid #f0f0f0', paddingBottom: '1.25rem' }}>
                     <p className="sa-text-left" style={{ fontSize: '11px', fontWeight: '700', color: '#666', margin: '0 0 0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Faixa Etária</p>
