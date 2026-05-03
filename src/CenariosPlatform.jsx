@@ -6,7 +6,7 @@ import {
   atualizarCenario, 
   deletarCenario 
 } from './supabaseClient';
-import LandingPage from './LandingPage';
+import LandingPage, { LandingHeader } from './LandingPage';
 
 const GLOBAL_CSS = `
   @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -79,7 +79,7 @@ const CameraIcon = () => (<svg width="24" height="24" viewBox="0 0 24 24" fill="
 const PlusIcon = () => (<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><line x1="10" y1="2" x2="10" y2="18" stroke="currentColor" strokeWidth="2"/><line x1="2" y1="10" x2="18" y2="10" stroke="currentColor" strokeWidth="2"/></svg>);
 
 function LoadingScreen({ message = 'Carregando cenários...' }) {
-  return (<><style>{GLOBAL_CSS}</style><div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}><Loader2 size={32} className="sa-spin" style={{ color: '#000' }} /><p style={{ fontSize: '14px', color: '#666', margin: 0 }}>{message}</p></div></>);
+  return (<><style>{GLOBAL_CSS}</style><div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}><Loader2 size={32} className="sa-spin" style={{ color: '#000' }} /><p style={{ fontSize: '14px', color: '#666', margin: 0 }}>{message}</p></div></>);
 }
 
 function GaleriaFotos({ imagens, titulo }) {
@@ -290,10 +290,16 @@ export default function CenariosPlatform() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // Scroll para o topo ao trocar de tela (abrir cenário, voltar pro catálogo, abrir admin)
+  // Scroll-to-top apenas em troca de "tela" (landing/catálogo/admin/detalhe).
+  // Âncoras dentro da landing (#informacoes, #orientacoes etc.) NÃO disparam scroll-to-top
+  // — deixamos o navegador rolar até a seção naturalmente.
+  const TELA_HASHES = ['', '#catalogo', '#admin'];
+  const isTelaHash = TELA_HASHES.includes(currentHash);
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [selectedScenario, currentHash, isAuthenticated]);
+    if (isTelaHash) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [selectedScenario, isTelaHash, isAuthenticated]);
 
   useEffect(() => {
     const loadLogo = async () => {
@@ -429,7 +435,7 @@ export default function CenariosPlatform() {
 
   if (error) {
     return (<><style>{GLOBAL_CSS}</style>
-      <div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+      <div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
         <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', maxWidth: '500px', width: '100%', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', textAlign: 'center' }}>
           <p style={{ fontSize: '48px', margin: 0 }}>⚠️</p>
           <h2 style={{ fontSize: '20px', margin: '1rem 0 0.5rem', color: '#000' }}>Não foi possível carregar</h2>
@@ -442,7 +448,7 @@ export default function CenariosPlatform() {
 
   if (!isAuthenticated && currentHash === '#admin') {
     return (<><style>{GLOBAL_CSS}</style>
-      <div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+      <div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
         <div style={{ background: 'white', borderRadius: '20px', padding: '3rem', boxShadow: '0 10px 40px rgba(0,0,0,0.1)', maxWidth: '400px', width: '100%' }}>
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <Lock size={48} style={{ color: '#000', marginBottom: '1rem' }} />
@@ -464,7 +470,7 @@ export default function CenariosPlatform() {
 
   if (selectedScenario) {
     return (<><style>{GLOBAL_CSS}</style>
-      <div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+      <div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
         <header style={{ background: 'white', borderBottom: '1px solid #f0f0f0', padding: '1rem', position: 'sticky', top: 0, zIndex: 100 }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, flex: 1 }}>
@@ -507,7 +513,7 @@ export default function CenariosPlatform() {
 
   if (isAuthenticated) {
     return (<><style>{GLOBAL_CSS}</style>
-      <div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', padding: '1rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+      <div className="sa-page" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)', padding: '1rem', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -516,7 +522,11 @@ export default function CenariosPlatform() {
                 <img src="https://brazildigital.ag/wp-content/uploads/2025/04/cropped-versao_Principal-80x80.png" alt="BrazilDigital" width="32" height="32" style={{ display: 'block' }} />
               </a>
             </div>
-            <button onClick={() => { setIsAuthenticated(false); window.location.hash = ''; setCurrentHash(''); }} style={{ padding: '10px 20px', background: '#000', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '600' }}>Sair</button>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <button onClick={() => { window.location.hash = ''; setCurrentHash(''); }} style={{ padding: '8px 14px', background: 'white', color: '#000', border: '1px solid #d5d5d5', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}>Início</button>
+              <button onClick={() => { window.location.hash = '#catalogo'; setCurrentHash('#catalogo'); }} style={{ padding: '8px 14px', background: 'white', color: '#000', border: '1px solid #d5d5d5', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}>Catálogo</button>
+              <button onClick={() => { setIsAuthenticated(false); window.location.hash = ''; setCurrentHash(''); }} style={{ padding: '10px 20px', background: '#000', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '600' }}>Sair</button>
+            </div>
           </div>
           {savedNotification && (<div style={{ background: '#e8f5e9', border: '1px solid #4caf50', color: '#2e7d32', padding: '10px 14px', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '13px', fontWeight: '600' }}>{savedNotification}</div>)}
           <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', marginBottom: '2rem', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
@@ -669,27 +679,31 @@ export default function CenariosPlatform() {
 
   // Se não está em #catalogo nem em #admin nem com cenário aberto, mostra a Landing Page
   if (currentHash !== '#catalogo') {
-    return <LandingPage logoUrl={logoUrl} onIrParaCatalogo={() => { window.location.hash = '#catalogo'; setCurrentHash('#catalogo'); }} />;
+    return (
+      <LandingPage
+        logoUrl={logoUrl}
+        onIrParaCatalogo={() => { window.location.hash = '#catalogo'; setCurrentHash('#catalogo'); }}
+        onIrParaAdmin={() => { window.location.hash = '#admin'; setCurrentHash('#admin'); }}
+      />
+    );
   }
 
   return (<><style>{GLOBAL_CSS}</style>
-    <div className="sa-page" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)' }}>
-      <header style={{ background: 'white', borderBottom: '1px solid #f0f0f0', padding: '1rem', position: 'sticky', top: 0, zIndex: 100 }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', gap: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, flex: 1 }}>
-            <LogoIcon src={logoUrl} />
-            <div style={{ minWidth: 0 }}>
-              <h1 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: '#000', whiteSpace: 'nowrap' }}>Samara Assis Fotografia</h1>
-              <p style={{ fontSize: '11px', color: '#666', margin: '0.25rem 0 0' }}>Catálogo de Cenários</p>
-            </div>
-          </div>
-          <button onClick={() => { window.location.hash = '#admin'; setCurrentHash('#admin'); }} style={{ padding: '8px 16px', background: '#000', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', flexShrink: 0 }}>Admin</button>
-        </div>
+    <div className="sa-page" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", minHeight: '100vh', background: 'linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%)' }}>
+      <LandingHeader
+        logoUrl={logoUrl}
+        onIrParaCatalogo={() => { window.location.hash = '#catalogo'; setCurrentHash('#catalogo'); window.scrollTo({ top: 0, behavior: 'instant' }); }}
+        onIrParaInicio={() => { window.location.hash = ''; setCurrentHash(''); }}
+        onIrParaAdmin={() => { window.location.hash = '#admin'; setCurrentHash('#admin'); }}
+        currentPage="catalogo"
+      />
+      {/* Sub-header com busca dedicada do catálogo */}
+      <div style={{ background: 'white', borderBottom: '1px solid #f0f0f0', padding: '0.75rem 1rem', position: 'sticky', top: '64px', zIndex: 99 }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
           <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#999' }} />
           <input type="text" placeholder="Buscar cenários..." value={filters.search} onChange={e => setFilters({ ...filters, search: e.target.value })} style={{ width: '100%', padding: '10px 14px 10px 40px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', color: '#000', boxSizing: 'border-box' }} />
         </div>
-      </header>
+      </div>
       <div style={{ background: 'white', borderBottom: '1px solid #f0f0f0', padding: '0.75rem 1rem' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.5rem' }}>
