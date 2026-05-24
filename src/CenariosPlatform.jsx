@@ -77,7 +77,7 @@ function cenarioMatchFaixa(scenario, faixa) {
 }
 
 const LogoIcon = ({ src }) => {
-  if (src) return <img src={src} alt="Samara Assis Fotografia" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />;
+  if (src) return <img src={src} alt="Samara Assi Fotografia" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />;
   return (<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="10" r="4" stroke="currentColor" strokeWidth="2" fill="none"/><path d="M8 24c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" strokeWidth="2" fill="none"/></svg>);
 };
 const CameraIcon = () => (<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/><circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" fill="none"/><circle cx="18" cy="8" r="1.5" fill="currentColor"/></svg>);
@@ -608,7 +608,7 @@ export default function CenariosPlatform() {
           <div style={{ maxWidth: '1600px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, flex: 1 }}>
               <LogoIcon src={logoUrl} />
-              <h1 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: '#000', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Samara Assis Fotografia</h1>
+              <h1 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: '#000', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Samara Assi Fotografia</h1>
             </div>
             <button onClick={() => setSelectedScenario(null)} style={{ padding: '8px 16px', background: 'white', border: '1px solid #d5d5d5', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', color: '#000', whiteSpace: 'nowrap', flexShrink: 0 }}>← Voltar</button>
           </div>
@@ -897,7 +897,7 @@ export default function CenariosPlatform() {
       </main>
       <footer style={{ background: '#f5f5f5', borderTop: '1px solid #f0f0f0', padding: '2rem', textAlign: 'center' }}>
         <p style={{ margin: '0 0 0.75rem', fontSize: '12px', color: '#999' }}>
-          © 2026 Samara Assis Fotografia<span className="sa-footer-sep-desktop"> - </span><br className="sa-footer-sep-mobile" />Todos os direitos reservados
+          © 2026 Samara Assi Fotografia<span className="sa-footer-sep-desktop"> - </span><br className="sa-footer-sep-mobile" />Todos os direitos reservados
         </p>
         <a href="http://brazildigital.ag" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', lineHeight: 0, opacity: 0.7, transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = '1'} onMouseLeave={e => e.currentTarget.style.opacity = '0.7'} aria-label="BrazilDigital.ag">
           <img src="https://brazildigital.ag/wp-content/uploads/2025/04/cropped-versao_Principal-80x80.png" alt="BrazilDigital" width="32" height="32" style={{ display: 'block' }} />

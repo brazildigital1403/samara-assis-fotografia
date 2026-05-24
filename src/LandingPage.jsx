@@ -197,9 +197,9 @@ export function LandingHeader({ logoUrl, onIrParaCatalogo, onIrParaInicio, onIrP
       <header className="lp-header">
         <div className="lp-header-inner">
           <div className="lp-header-brand" onClick={onIrParaInicio}>
-            {logoUrl ? <img src={logoUrl} alt="Samara Assis Fotografia" className="lp-header-brand-img" /> : null}
+            {logoUrl ? <img src={logoUrl} alt="Samara Assi Fotografia" className="lp-header-brand-img" /> : null}
             <div className="lp-header-brand-text">
-              <h1>Samara Assis Fotografia</h1>
+              <h1>Samara Assi Fotografia</h1>
               <p>Desde 2003</p>
             </div>
           </div>
@@ -271,8 +271,8 @@ export default function LandingPage({ logoUrl, onIrParaCatalogo, onIrParaAdmin }
 
         {/* HERO / ABERTURA */}
         <section id="abertura" className="lp-hero">
-          {logoUrl && <img src={logoUrl} alt="Samara Assis Fotografia" className="lp-hero-logo" />}
-          <h1>Samara Assis Fotografia</h1>
+          {logoUrl && <img src={logoUrl} alt="Samara Assi Fotografia" className="lp-hero-logo" />}
+          <h1>Samara Assi Fotografia</h1>
           <p className="lp-hero-sub">Cenários únicos para eternizar cada fase do seu bebê</p>
           <p className="lp-hero-since">Há mais de 20 anos criando memórias</p>
           <button onClick={onIrParaCatalogo} className="lp-hero-cta">
@@ -406,7 +406,7 @@ export default function LandingPage({ logoUrl, onIrParaCatalogo, onIrParaAdmin }
             </div>
 
             <div className="lp-contato-info">
-              <p><strong>Samara Assis / Erick Batista</strong> — Fotógrafos</p>
+              <p><strong>Samara Assi / Erick Batista</strong> — Fotógrafos</p>
               <p>Atendimento de Segunda à Sexta, das 9h às 18h</p>
             </div>
           </div>
@@ -425,7 +425,7 @@ export default function LandingPage({ logoUrl, onIrParaCatalogo, onIrParaAdmin }
         {/* FOOTER */}
         <footer className="lp-footer">
           <p>
-            © 2026 Samara Assis Fotografia<span className="lp-footer-sep-desktop"> - </span><br className="lp-footer-sep-mobile" />Todos os direitos reservados
+            © 2026 Samara Assi Fotografia<span className="lp-footer-sep-desktop"> - </span><br className="lp-footer-sep-mobile" />Todos os direitos reservados
           </p>
           <a href="https://brazildigital.ag" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', lineHeight: 0, opacity: 0.7, transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = '1'} onMouseLeave={e => e.currentTarget.style.opacity = '0.7'} aria-label="BrazilDigital.ag">
             <img src="https://brazildigital.ag/wp-content/uploads/2025/04/cropped-versao_Principal-80x80.png" alt="BrazilDigital" width="32" height="32" style={{ display: 'block' }} />
