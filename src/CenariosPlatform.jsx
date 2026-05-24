@@ -1,10 +1,12 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, Eye, EyeOff, Lock, ChevronDown, ChevronLeft, ChevronRight, X, Edit2, Trash2, Loader2 } from 'lucide-react';
+import { Search, Eye, EyeOff, Lock, ChevronDown, ChevronLeft, ChevronRight, X, Edit2, Trash2, Loader2, Upload, ImagePlus } from 'lucide-react';
 import { 
   carregarCenarios, 
   adicionarCenario, 
   atualizarCenario, 
-  deletarCenario 
+  deletarCenario,
+  uploadImagem,
+  deletarImagemPorUrl,
 } from './supabaseClient';
 import LandingPage, { LandingHeader } from './LandingPage';
 
@@ -126,6 +128,134 @@ function GaleriaFotos({ imagens, titulo }) {
   </>);
 }
 
+// ============================================================================
+// COMPONENTES DE UPLOAD (capa única + galeria múltipla)
+// ============================================================================
+function UploadCapa({ valor, onChange, disabled }) {
+  const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState('');
+  const inputRef = useRef(null);
+
+  const handleEscolher = () => { if (!disabled && !enviando) inputRef.current?.click(); };
+
+  const handleArquivo = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // permite escolher o mesmo arquivo de novo depois
+    if (!file) return;
+    setErro('');
+    setEnviando(true);
+    try {
+      const url = await uploadImagem(file);
+      // Apaga a capa antiga do Storage (se for do nosso bucket)
+      if (valor) { try { await deletarImagemPorUrl(valor); } catch (_) {} }
+      onChange(url);
+    } catch (e) {
+      setErro(e.message || 'Erro ao enviar foto');
+    } finally {
+      setEnviando(false);
+    }
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="file" accept="image/*" onChange={handleArquivo} disabled={disabled || enviando} style={{ display: 'none' }} />
+      {valor && !enviando && (
+        <div style={{ position: 'relative', marginBottom: '10px', textAlign: 'center' }}>
+          <img src={valor} alt="Capa atual" style={{ width: '100%', maxWidth: '280px', height: '160px', objectFit: 'cover', borderRadius: '10px', border: '2px solid #e5e5e5' }} />
+        </div>
+      )}
+      {enviando && (
+        <div style={{ marginBottom: '10px', padding: '32px', background: '#f5f5f5', borderRadius: '10px', textAlign: 'center', border: '2px dashed #c5c5c5' }}>
+          <Loader2 size={24} className="sa-spin" style={{ color: '#666', marginBottom: '8px' }} />
+          <p style={{ fontSize: '13px', color: '#666', margin: 0 }}>Enviando foto...</p>
+        </div>
+      )}
+      <button type="button" onClick={handleEscolher} disabled={disabled || enviando}
+        style={{ width: '100%', padding: '12px', background: valor ? 'white' : '#000', color: valor ? '#000' : 'white',
+                 border: valor ? '1px solid #d5d5d5' : 'none', borderRadius: '10px', fontSize: '14px', fontWeight: '600',
+                 cursor: (disabled || enviando) ? 'not-allowed' : 'pointer', opacity: (disabled || enviando) ? 0.5 : 1,
+                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+        {valor ? <Edit2 size={14} /> : <Upload size={14} />}
+        {valor ? 'Trocar foto' : 'Escolher foto'}
+      </button>
+      {erro && <p style={{ color: '#c00', fontSize: '12px', margin: '8px 0 0', textAlign: 'center' }}>{erro}</p>}
+    </div>
+  );
+}
+
+function UploadGaleria({ imagens, onChange, disabled }) {
+  const [enviandoCount, setEnviandoCount] = useState(0);
+  const [erro, setErro] = useState('');
+  const inputRef = useRef(null);
+
+  const handleEscolher = () => { if (!disabled) inputRef.current?.click(); };
+
+  const handleArquivos = async (e) => {
+    const files = Array.from(e.target.files || []);
+    e.target.value = '';
+    if (!files.length) return;
+    setErro('');
+    setEnviandoCount(files.length);
+    try {
+      // Upload em paralelo
+      const urls = await Promise.all(files.map(f => uploadImagem(f)));
+      onChange([...(imagens || []), ...urls]);
+    } catch (e) {
+      setErro(e.message || 'Erro ao enviar fotos');
+    } finally {
+      setEnviandoCount(0);
+    }
+  };
+
+  const handleRemover = async (idx) => {
+    const url = imagens[idx];
+    const novas = imagens.filter((_, i) => i !== idx);
+    onChange(novas);
+    // Apaga do storage em background (não bloqueia UI)
+    if (url) { try { await deletarImagemPorUrl(url); } catch (_) {} }
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="file" accept="image/*" multiple onChange={handleArquivos} disabled={disabled || enviandoCount > 0} style={{ display: 'none' }} />
+      {imagens && imagens.length > 0 && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: '8px', marginBottom: '10px' }}>
+          {imagens.map((url, idx) => (
+            <div key={`${url}-${idx}`} style={{ position: 'relative', aspectRatio: '1', borderRadius: '8px', overflow: 'hidden', border: '2px solid #e5e5e5' }}>
+              <img src={url} alt={`Foto ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <button type="button" onClick={() => handleRemover(idx)} disabled={disabled}
+                style={{ position: 'absolute', top: '4px', right: '4px', width: '24px', height: '24px', borderRadius: '50%',
+                         background: 'rgba(0,0,0,0.7)', color: 'white', border: 'none', cursor: 'pointer',
+                         display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <X size={14} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      {enviandoCount > 0 && (
+        <div style={{ marginBottom: '10px', padding: '20px', background: '#f5f5f5', borderRadius: '10px', textAlign: 'center', border: '2px dashed #c5c5c5' }}>
+          <Loader2 size={20} className="sa-spin" style={{ color: '#666', marginBottom: '4px' }} />
+          <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>Enviando {enviandoCount} foto(s)...</p>
+        </div>
+      )}
+      <button type="button" onClick={handleEscolher} disabled={disabled || enviandoCount > 0}
+        style={{ width: '100%', padding: '12px', background: 'white', color: '#000', border: '1px dashed #c5c5c5',
+                 borderRadius: '10px', fontSize: '14px', fontWeight: '600',
+                 cursor: (disabled || enviandoCount > 0) ? 'not-allowed' : 'pointer',
+                 opacity: (disabled || enviandoCount > 0) ? 0.5 : 1,
+                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+        <ImagePlus size={16} />
+        Adicionar foto(s) à galeria
+      </button>
+      {erro && <p style={{ color: '#c00', fontSize: '12px', margin: '8px 0 0', textAlign: 'center' }}>{erro}</p>}
+      {imagens && imagens.length > 0 && (
+        <p style={{ fontSize: '11px', color: '#666', margin: '8px 0 0', textAlign: 'center' }}>{imagens.length} foto(s) na galeria</p>
+      )}
+    </div>
+  );
+}
+
 function ModalEdicao({ scenario, onSave, onClose, isSaving }) {
   // Separa capa das URLs adicionais ao abrir o modal
   const todasImagens = scenario.imagens || [scenario.imagemUrl];
@@ -146,7 +276,7 @@ function ModalEdicao({ scenario, onSave, onClose, isSaving }) {
   });
   const handleSave = () => {
     if (!editData.titulo.trim()) { alert('Título obrigatório!'); return; }
-    if (!editData.imagemUrl.trim()) { alert('Adicione a URL da capa!'); return; }
+    if (!editData.imagemUrl.trim()) { alert('Adicione uma foto de capa!'); return; }
     // Reconstrói galeria com capa primeiro + adicionais (sem duplicar capa)
     const galeria = [editData.imagemUrl, ...editData.imagens.filter(u => u && u !== editData.imagemUrl)];
     onSave({ ...scenario, ...editData, imagemUrl: editData.imagemUrl, imagens: galeria });
@@ -166,18 +296,12 @@ function ModalEdicao({ scenario, onSave, onClose, isSaving }) {
           <input type="text" value={editData.titulo} onChange={e => setEditData({ ...editData, titulo: e.target.value })} placeholder="Ex: Newborn - 7 Dias" style={inputStyle} />
         </div>
         <div style={{ marginBottom: '1rem' }}>
-          <label style={labelStyle}>📸 URL da Capa *</label>
-          <input type="text" value={editData.imagemUrl} onChange={e => setEditData({ ...editData, imagemUrl: e.target.value })} placeholder="https://...capa.jpg" style={{ ...inputStyle, fontFamily: 'monospace', fontSize: '12px' }} />
-          {editData.imagemUrl && (
-            <div style={{ marginTop: '10px', textAlign: 'center' }}>
-              <img src={editData.imagemUrl} alt="Preview da capa" style={{ width: '100%', maxWidth: '240px', height: '140px', objectFit: 'cover', borderRadius: '8px', border: '2px solid #f0f0f0' }} />
-            </div>
-          )}
+          <label style={labelStyle}>📸 Foto de Capa *</label>
+          <UploadCapa valor={editData.imagemUrl} onChange={url => setEditData({ ...editData, imagemUrl: url })} disabled={isSaving} />
         </div>
         <div style={{ marginBottom: '1rem' }}>
-          <label style={labelStyle}>🖼️ URLs da Galeria (uma por linha)</label>
-          <textarea value={editData.imagens.join('\n')} onChange={e => { const urls = e.target.value.split('\n').filter(u => u.trim()); setEditData({ ...editData, imagens: urls }); }} rows="4" placeholder="https://...foto1.jpg&#10;https://...foto2.jpg" style={{ ...inputStyle, fontFamily: 'monospace', fontSize: '12px', resize: 'vertical' }} />
-          <p style={{ fontSize: '11px', color: '#666', margin: '6px 0 0', textAlign: 'center' }}>{editData.imagens.length} foto(s) adicionais na galeria</p>
+          <label style={labelStyle}>🖼️ Fotos da Galeria</label>
+          <UploadGaleria imagens={editData.imagens} onChange={imgs => setEditData({ ...editData, imagens: imgs })} disabled={isSaving} />
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
           <div><label style={labelStyle}>Categoria</label>
@@ -335,7 +459,7 @@ export default function CenariosPlatform() {
 
   const handleAddScenario = async () => {
     if (!newScenario.titulo.trim()) { alert('Adicione um título!'); return; }
-    if (!newScenario.imagemUrl.trim()) { alert('Adicione a URL da capa!'); return; }
+    if (!newScenario.imagemUrl.trim()) { alert('Adicione uma foto de capa!'); return; }
     try {
       setSaving(true);
       // Galeria sempre inclui a capa como primeira foto + as URLs adicionais (sem duplicar a capa)
@@ -547,22 +671,16 @@ export default function CenariosPlatform() {
               <input type="text" value={newScenario.titulo} onChange={e => setNewScenario({ ...newScenario, titulo: e.target.value })} placeholder="Ex: Newborn - 7 Dias" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '14px', background: '#f5f5f5', boxSizing: 'border-box' }} />
             </div>
 
-            {/* URL DA CAPA */}
+            {/* CAPA */}
             <div style={{ marginBottom: '1rem' }}>
-              <label className="sa-form-label">📸 URL da Capa</label>
-              <input type="text" value={newScenario.imagemUrl} onChange={e => setNewScenario({ ...newScenario, imagemUrl: e.target.value })} placeholder="https://...capa.jpg" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '13px', fontFamily: 'monospace', background: '#f5f5f5', boxSizing: 'border-box' }} />
-              {newScenario.imagemUrl && (
-                <div style={{ marginTop: '10px', textAlign: 'center' }}>
-                  <img src={newScenario.imagemUrl} alt="Preview da capa" style={{ width: '100%', maxWidth: '240px', height: '140px', objectFit: 'cover', borderRadius: '8px', border: '2px solid #f0f0f0' }} />
-                </div>
-              )}
+              <label className="sa-form-label">📸 Foto de Capa</label>
+              <UploadCapa valor={newScenario.imagemUrl} onChange={url => setNewScenario({ ...newScenario, imagemUrl: url })} disabled={saving} />
             </div>
 
-            {/* URLs ADICIONAIS DA GALERIA */}
+            {/* GALERIA */}
             <div style={{ marginBottom: '1rem' }}>
-              <label className="sa-form-label">🖼️ URLs da Galeria (uma por linha)</label>
-              <textarea value={newScenario.imagens.join('\n')} onChange={e => { const urls = e.target.value.split('\n').filter(u => u.trim()); setNewScenario({ ...newScenario, imagens: urls }); }} placeholder="https://...foto1.jpg&#10;https://...foto2.jpg&#10;https://...foto3.jpg" rows="4" disabled={saving} style={{ width: '100%', padding: '12px', border: '1px solid #d5d5d5', borderRadius: '8px', fontSize: '13px', fontFamily: 'monospace', background: '#f5f5f5', boxSizing: 'border-box', resize: 'vertical' }} />
-              <p style={{ fontSize: '11px', color: '#666', margin: '6px 0 0' }}>{newScenario.imagens.length} foto(s) na galeria - 3 a 5 fotos recomendadas</p>
+              <label className="sa-form-label">🖼️ Fotos da Galeria</label>
+              <UploadGaleria imagens={newScenario.imagens} onChange={imgs => setNewScenario({ ...newScenario, imagens: imgs })} disabled={saving} />
             </div>
 
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
