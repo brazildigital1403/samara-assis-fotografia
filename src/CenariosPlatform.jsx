@@ -346,8 +346,38 @@ function ModalEdicao({ scenario, onSave, onClose, isSaving }) {
   </div>);
 }
 
+// ============================================================================
+// PERSISTÊNCIA DA AUTENTICAÇÃO ADMIN
+// Mantém Mia logada por 7 dias após inserir a senha — F5 não pede login de novo.
+// ============================================================================
+const AUTH_KEY = 'samara_admin_auth';
+const AUTH_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 dias
+
+function isAdminAuthenticated() {
+  try {
+    const expiresAt = localStorage.getItem(AUTH_KEY);
+    if (!expiresAt) return false;
+    return parseInt(expiresAt, 10) > Date.now();
+  } catch (_) {
+    // localStorage pode estar indisponível em alguns modos privados/iframes
+    return false;
+  }
+}
+
+function saveAdminAuth() {
+  try {
+    localStorage.setItem(AUTH_KEY, String(Date.now() + AUTH_DURATION_MS));
+  } catch (_) {}
+}
+
+function clearAdminAuth() {
+  try {
+    localStorage.removeItem(AUTH_KEY);
+  } catch (_) {}
+}
+
 export default function CenariosPlatform() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => isAdminAuthenticated());
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState(null);
@@ -457,7 +487,7 @@ export default function CenariosPlatform() {
   function showNotif(msg) { setSavedNotification(msg); setTimeout(() => setSavedNotification(''), 2500); }
 
   const handleAdminLogin = () => {
-    if (passwordInput === 'samara123') { setIsAuthenticated(true); setPasswordInput(''); }
+    if (passwordInput === 'samara123') { saveAdminAuth(); setIsAuthenticated(true); setPasswordInput(''); }
     else alert('Senha incorreta');
   };
 
@@ -662,7 +692,7 @@ export default function CenariosPlatform() {
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
               <button onClick={() => { window.location.hash = ''; setCurrentHash(''); }} style={{ padding: '8px 14px', background: 'white', color: '#000', border: '1px solid #d5d5d5', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}>Início</button>
               <button onClick={() => { window.location.hash = '#catalogo'; setCurrentHash('#catalogo'); }} style={{ padding: '8px 14px', background: 'white', color: '#000', border: '1px solid #d5d5d5', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}>Catálogo</button>
-              <button onClick={() => { setIsAuthenticated(false); window.location.hash = ''; setCurrentHash(''); }} style={{ padding: '10px 20px', background: '#000', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '600' }}>Sair</button>
+              <button onClick={() => { clearAdminAuth(); setIsAuthenticated(false); window.location.hash = ''; setCurrentHash(''); }} style={{ padding: '10px 20px', background: '#000', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '600' }}>Sair</button>
             </div>
           </div>
           {savedNotification && (<div style={{ background: '#e8f5e9', border: '1px solid #4caf50', color: '#2e7d32', padding: '10px 14px', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '13px', fontWeight: '600' }}>{savedNotification}</div>)}
