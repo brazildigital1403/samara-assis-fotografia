@@ -12,8 +12,12 @@ import LandingPage, { LandingHeader } from './LandingPage';
 
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; margin: 0; padding: 0; }
+  html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; margin: 0; padding: 0; color-scheme: light; }
   body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, span, div, label, a { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  /* Fix Windows dark mode: força form elements em tema claro com cores explícitas */
+  input, select, textarea { color: #000 !important; background-color: #f5f5f5; color-scheme: light; }
+  select option { color: #000 !important; background-color: #fff !important; }
+  input::placeholder, textarea::placeholder { color: #999 !important; opacity: 1; }
   @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes modalSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

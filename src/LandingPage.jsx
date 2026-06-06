@@ -42,7 +42,7 @@ const LANDING_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
   .lp-page * { box-sizing: border-box; }
-  .lp-page { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; min-height: 100vh; background: #fff; color: #000; }
+  .lp-page { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; min-height: 100vh; background: #fff; color: #000; color-scheme: light; }
 
   /* ============================================
      HEADER (compartilhado entre Landing e Catálogo)
